@@ -3,6 +3,7 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import SettingsForm from '../components/SettingsForm';
+import requireUser from '../utils/requireUser';
 
 async function getData(userId: string) {
   const data = await prisma.user.findUnique({
@@ -15,14 +16,9 @@ async function getData(userId: string) {
 }
 
 const SettingsPage = async () => {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const user = await requireUser();
 
-  if (!user) {
-    return redirect('/api/auth/login');
-  }
-
-  const data = await getData(user.id);
+  const data = await getData(user?.id);
   return (
     <div className="max-w-[1000px] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col mt-4">
       <SettingsForm username={data?.userName} />

@@ -24,8 +24,6 @@ const SettingsForm = ({
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log('State changed:', state); // Debugging log
-
     if (state?.status === 'green') {
       toast({
         title: 'Success',
@@ -64,7 +62,7 @@ const SettingsForm = ({
           <Button variant="secondary" type="button" asChild>
             <Link href={'/'}>Cancel</Link>
           </Button>
-          <SubmitButtons />
+          <SubmitButtons text="Change username" />
         </div>
       </div>
     </form>

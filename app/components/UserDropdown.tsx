@@ -42,17 +42,17 @@ const UserDropdown = ({ profilePicture }: DropdownProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[200px]">
         <DropdownMenuItem>
-          <Link href="/r/create" className="w-full">
+          <Link href={'/subreddit/create'} className="w-full">
             Create Community
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/create" className="w-full">
+          <Link href={'/create'} className="w-full">
             Create Post
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/settings" className="w-full">
+          <Link href={'/settings'} className="w-full">
             Settings
           </Link>
         </DropdownMenuItem>

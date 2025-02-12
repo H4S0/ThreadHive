@@ -5,17 +5,24 @@ import { Loader2 } from 'lucide-react';
 import React from 'react';
 import { useFormStatus } from 'react-dom';
 
-const SubmitButtons = () => {
+interface submitButtons {
+  text: string;
+  className?: string;
+}
+
+const SubmitButtons = ({ text, className }: submitButtons) => {
   const { pending } = useFormStatus();
   return (
     <>
       {pending ? (
-        <Button disabled>
+        <Button disabled className={className}>
           <Loader2 className="mr-2 w-4 h-4 animate-spin" />
           Please wait
         </Button>
       ) : (
-        <Button type="submit">Change Username</Button>
+        <Button type="submit" className={className}>
+          {text}
+        </Button>
       )}
     </>
   );
