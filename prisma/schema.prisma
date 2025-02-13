@@ -41,7 +41,7 @@ model Post {
 
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  Subreddit Subreddit? @relation(fields: [subName], references: [id])
+  Subreddit Subreddit? @relation(fields: [subName], references: [name])
   subName   String?
   User      User?      @relation(fields: [userId], references: [id])
   userId    String?

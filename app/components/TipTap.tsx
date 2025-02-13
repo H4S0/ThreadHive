@@ -1,6 +1,11 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { EditorContent, useEditor, type Editor } from '@tiptap/react';
+import {
+  EditorContent,
+  JSONContent,
+  useEditor,
+  type Editor,
+} from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useState } from 'react';
 
@@ -65,7 +70,13 @@ export const Menubar = ({ editor }: { editor: Editor | null }) => {
   );
 };
 
-export function TipTapEditor() {
+export function TipTapEditor({
+  setJson,
+  json,
+}: {
+  setJson: any;
+  json: JSONContent | null;
+}) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -74,12 +85,17 @@ export function TipTapEditor() {
 
   const editor = useEditor({
     extensions: [StarterKit],
-    content: '<p>hello</p>',
+    content: json ?? '<p>Create your description</p>',
     editorProps: {
       attributes: {
         class: 'prose',
       },
     },
+    onUpdate: ({ editor }) => {
+      const json = editor.getJSON();
+      setJson(json);
+    },
+    immediatelyRender: false,
   });
 
   if (!mounted) return null;
