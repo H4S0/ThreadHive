@@ -2,7 +2,15 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['lh3.googleusercontent.com'], // Add the domain here
+    remotePatterns: [
+      {
+        hostname: 'lh3.googleusercontent.com',
+      },
+      { hostname: 'avatar.vercel.sh' },
+      {
+        hostname: 'utfs.io',
+      },
+    ], // Add the domain here
   },
 };
 
