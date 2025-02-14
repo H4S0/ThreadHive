@@ -40,7 +40,7 @@ export default async function Home() {
             key={post.id}
             id={post.id}
             title={post.title}
-            imageString={post.imageString}
+            imageString={post.imageString?.toString()}
             jsonContent={post.textContent}
             subName={post.subName as string}
             userName={post.User?.userName as string}

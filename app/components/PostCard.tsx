@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowDown, ArrowUp } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
@@ -10,7 +11,7 @@ interface postProps {
   id: string;
   subName: string;
   userName: string;
-  imageString: string | null;
+  imageString: string | null | undefined;
 }
 
 const PostCard = ({
@@ -55,7 +56,16 @@ const PostCard = ({
             <h1 className="font-medium mt-1 text-lg">{title}</h1>
           </Link>
         </div>
-        <div></div>
+        <div>
+          {imageString && imageString.startsWith('http') && (
+            <Image
+              src={imageString}
+              alt="Post image"
+              width={600}
+              height={300}
+            />
+          )}
+        </div>
       </div>
     </Card>
   );

@@ -51,7 +51,10 @@ export default function CreatePostRoute({
   const [json, setJson] = useState<null | JSONContent>(null);
   const [title, setTitle] = useState<null | string>(null);
 
-  const createPostReddit = createPost.bind(null, { jsonContent: json });
+  const createPostReddit = async (formData: FormData) => {
+    await createPost({ jsonContent: json }, formData);
+  };
+
   return (
     <div className="max-w-[1000px] mx-auto flex flex-col lg:flex-row gap-x-10 mt-4 p-4">
       <div className="w-full lg:w-[65%] flex flex-col gap-y-5">
