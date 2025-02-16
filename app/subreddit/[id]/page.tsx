@@ -1,13 +1,14 @@
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import prisma from '@/lib/db';
-
 import SubDescriptionForm from '@/app/components/SubDescriptionForm';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import requireUser from '@/app/utils/requireUser';
+
+import { Heart, TimerIcon } from 'lucide-react';
 
 async function getData(name: string) {
   const data = await prisma.subreddit.findUnique({
@@ -19,6 +20,15 @@ async function getData(name: string) {
       createdAt: true,
       description: true,
       userId: true,
+      posts: {
+        select: {
+          title: true,
+          textContent: true,
+          imageString: true,
+          id: true,
+          createdAt: true,
+        },
+      },
     },
   });
 
@@ -27,14 +37,29 @@ async function getData(name: string) {
 
 const SubredditRoute = async ({ params }: { params: { id: string } }) => {
   const data = await getData(params.id);
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const user = await requireUser();
+  const hoursNow = new Date().getHours();
   return (
-    <div className="max-w-[1000px] mx-auto flex mt-4 gap-x-10">
-      <div className="w-[65%] flex flex-col gap-y-5">
-        <h2>post section</h2>
+    <div className="max-w-[1000px] mx-auto mt-4 grid grid-cols-1 md:grid-cols-[65%_35%] gap-5">
+      <div className="flex flex-col gap-y-5">
+        {data?.posts.map((post) => (
+          <Card key={post.id} className="p-4">
+            <CardHeader className="flex flex-row items-center gap-x-3">
+              <p className="font-semibold text-xl">{post.title}</p>
+              <div className="flex items-center">
+                <TimerIcon className="w-4 h-4" />
+                <p>{hoursNow - post.createdAt.getHours()}hr. ago</p>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Separator />
+              <p className="mt-2">{post.textContent}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
-      <div className="w-[35%]">
+
+      <div className="w-full">
         <Card>
           <div className="bg-muted p-4 font-semibold">About Community</div>
           <div className="p-4">
@@ -67,17 +92,22 @@ const SubredditRoute = async ({ params }: { params: { id: string } }) => {
             </div>
 
             <Separator className="my-5" />
-            <Button className="w-full">
-              <Link
-                href={
-                  user?.id
-                    ? `/subreddit/${data?.name}/create`
-                    : '/api/auth/login'
-                }
-              >
-                Create Post
-              </Link>
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button className="w-full">
+                <Link
+                  href={
+                    user?.id
+                      ? `/subreddit/${data?.name}/create`
+                      : '/api/auth/login'
+                  }
+                >
+                  Create Post
+                </Link>
+              </Button>
+              <Button className="w-full" variant="secondary">
+                Join
+              </Button>
+            </div>
           </div>
         </Card>
       </div>

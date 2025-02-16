@@ -116,9 +116,7 @@ export default async function Home() {
               favorite communities.
             </p>
             <Separator />
-            <Button variant="secondary" asChild>
-              <Link href={`/subreddit/haso/create`}>Create Post</Link>
-            </Button>
+
             <Button asChild>
               <Link href={'/subreddit/create'}>Create Community</Link>
             </Button>
