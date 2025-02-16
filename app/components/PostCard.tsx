@@ -6,6 +6,7 @@ import Link from 'next/link';
 import React from 'react';
 import CopyLink from './CopyLink';
 import { handleVote, setJoin } from '../actions';
+import SubmitButtons from './SubmitButtons';
 
 interface postProps {
   title: string;
@@ -16,9 +17,11 @@ interface postProps {
   imageString: string | null | undefined;
   voteCount: number;
   subredditId: string | undefined;
+  isJoined: boolean;
 }
 
 const PostCard = ({
+  isJoined,
   subredditId,
   id,
   imageString,
@@ -49,19 +52,22 @@ const PostCard = ({
       </div>
 
       <div>
-        <div className="flex items-center gap-x-2 p-2">
+        <div className="flex items-center gap-x-2 p-2 w-full">
           <Link
             href={`/subreddit/${subName}`}
             className="font-semibold text-xs"
           >
-            subreddit/{subName}
+            threadhive/{subName}
           </Link>
           <p className="text-xs text-muted-foreground">
             Posted by: <span className="hover:text-primary">{userName}</span>
           </p>
           <form action={setJoin}>
             <input type="hidden" name="subredditId" value={subredditId} />
-            <button type="submit">join</button>
+            <SubmitButtons
+              text={isJoined ? 'unjoin' : 'join'}
+              className="h-6"
+            />
           </form>
         </div>
 

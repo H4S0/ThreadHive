@@ -1,10 +1,22 @@
+import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import React from 'react';
 
-const PopularCard = ({ data }) => {
+interface popularProps {
+  name: string;
+  members: number;
+}
+
+const PopularCard = ({ data }: { data: popularProps }) => {
   return (
-    <div>
-      <Link href={`/subreddit/${data.name}`}>{data.name}</Link>
+    <div className="flex flex-col">
+      <Link href={`/subreddit/${data.name}`} className="font-medium">
+        thread/{data.name}
+      </Link>
+      <p className="text-sm">
+        Members: <span className="text-primary font-bold">{data.members}</span>
+      </p>
+      <Separator className="mt-2" />
     </div>
   );
 };

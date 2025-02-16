@@ -9,6 +9,7 @@ import CreatePostCard from './components/CreatePostCard';
 import prisma from '@/lib/db';
 import PostCard from './components/PostCard';
 import PopularCard from './components/PopularCard';
+import requireUser from './utils/requireUser';
 
 async function getData() {
   const data = await prisma.post.findMany({
@@ -50,36 +51,53 @@ async function getPopularCommunities() {
     select: {
       name: true,
       id: true,
+      members: true,
+      users: {
+        select: {
+          id: true,
+        },
+      },
     },
   });
   return popularCommunities;
 }
 
 export default async function Home() {
+  const user = await requireUser();
+  const userId = user.id;
   const data = await getData();
   const popularCommunities = await getPopularCommunities();
+
   return (
     <div className="flex flex-col items-start sm:flex-row sm:max-w-[1000px] sm:mx-auto sm:gap-x-10 sm:mt-2 p-2">
       <div className="sm:w-[65%] flex flex-col gap-y-5">
         <CreatePostCard />
-        {data.map((post) => (
-          <PostCard
-            subredditId={post.Subreddit?.id}
-            key={post.id}
-            id={post.id}
-            title={post.title}
-            imageString={post?.imageString as string}
-            textContent={post.textContent}
-            subName={post.subName as string}
-            userName={post.User?.userName as string}
-            voteCount={post.votes.reduce((acc, vote) => {
-              if (vote.voteType === 'UP') return acc + 1;
-              if (vote.voteType === 'DOWN') return acc - 1;
+        {data.map((post) => {
+          const isJoined = popularCommunities.some(
+            (community) =>
+              community.id === post.Subreddit?.id &&
+              community.users.some((u) => u.id === userId)
+          );
 
-              return acc;
-            }, 0)}
-          />
-        ))}
+          return (
+            <PostCard
+              isJoined={isJoined}
+              subredditId={post.Subreddit?.id}
+              key={post.id}
+              id={post.id}
+              title={post.title}
+              imageString={post?.imageString as string}
+              textContent={post.textContent}
+              subName={post.subName as string}
+              userName={post.User?.userName as string}
+              voteCount={post.votes.reduce((acc, vote) => {
+                if (vote.voteType === 'UP') return acc + 1;
+                if (vote.voteType === 'DOWN') return acc - 1;
+                return acc;
+              }, 0)}
+            />
+          );
+        })}
       </div>
       <div className="w-[35%] hidden flex-col gap-y-5 sm:flex ">
         <Card>
@@ -107,7 +125,7 @@ export default async function Home() {
           </div>
         </Card>
         <Card>
-          <div className="p-2 flex flex-col gap-5">
+          <div className="p-3 flex flex-col">
             {popularCommunities.length > 0 ? (
               popularCommunities.map((community) => (
                 <PopularCard data={community} key={community.id} />
