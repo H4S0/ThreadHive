@@ -67,7 +67,6 @@ export async function createSubreddit(prevState: any, formData: FormData) {
 }
 
 export async function updateSubDescription(prevState: any, formData: FormData) {
-  const user = await requireUser();
   const subName = formData.get('subName') as string;
   const description = formData.get('description') as string;
   try {
@@ -94,20 +93,13 @@ export async function updateSubDescription(prevState: any, formData: FormData) {
   }
 }
 
-export async function createPost(
-  { jsonContent }: { jsonContent: JSONContent | null },
-  formData: FormData
-) {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
-
-  if (!user) {
-    return redirect('/api/auth/login');
-  }
+export async function createPost(formData: FormData) {
+  const user = await requireUser();
 
   const title = formData.get('title') as string;
   const imageUrl = formData.get('imageUrl') as string | null;
   const subName = formData.get('subName') as string;
+  const textContent = formData.get('textContent') as string;
 
   const data = await prisma.post.create({
     data: {
@@ -115,7 +107,7 @@ export async function createPost(
       imageString: imageUrl ?? undefined,
       subName: subName,
       userId: user.id,
-      textContent: jsonContent ?? undefined,
+      textContent: textContent,
     },
   });
 
@@ -166,4 +158,42 @@ export async function handleVote(formData: FormData) {
   });
 
   return revalidatePath('/', 'page');
+}
+
+export async function setJoin(formData: FormData) {
+  const user = await requireUser();
+  const userId = user.id;
+  const subredditId = formData.get('subredditId') as string;
+
+  const subreddit = await prisma.subreddit.findUnique({
+    where: { id: subredditId },
+    include: {
+      users: true,
+    },
+  });
+
+  if (!subreddit) {
+    throw new Error('subreddit not found');
+  }
+
+  if (subreddit.users.some((user) => user.id === userId)) {
+    // If user is already a member, unjoin (disconnect) and decrement members count
+    await prisma.subreddit.update({
+      where: { id: subredditId },
+      data: {
+        users: { disconnect: { id: userId } }, // Disconnect the user
+        members: { decrement: 1 }, // Decrement the member count
+      },
+    });
+  } else {
+    // If user is not a member, join (connect) and increment members count
+    await prisma.subreddit.update({
+      where: { id: subredditId },
+      data: {
+        users: { connect: { id: userId } }, // Connect the user
+        members: { increment: 1 }, // Increment the member count
+      },
+    });
+  }
+  return redirect('/');
 }

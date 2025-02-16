@@ -5,23 +5,24 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import CopyLink from './CopyLink';
-import { handleVote } from '../actions';
-import RenderJson from './RenderJson';
+import { handleVote, setJoin } from '../actions';
 
 interface postProps {
   title: string;
-  jsonContent: any;
+  textContent: string;
   id: string;
   subName: string;
   userName: string;
   imageString: string | null | undefined;
   voteCount: number;
+  subredditId: string | undefined;
 }
 
 const PostCard = ({
+  subredditId,
   id,
   imageString,
-  jsonContent,
+  textContent,
   subName,
   userName,
   title,
@@ -58,6 +59,10 @@ const PostCard = ({
           <p className="text-xs text-muted-foreground">
             Posted by: <span className="hover:text-primary">{userName}</span>
           </p>
+          <form action={setJoin}>
+            <input type="hidden" name="subredditId" value={subredditId} />
+            <button type="submit">join</button>
+          </form>
         </div>
 
         <div className="px-2">
@@ -75,7 +80,7 @@ const PostCard = ({
               className="w-full h-full"
             />
           ) : (
-            <RenderJson data={jsonContent} />
+            <p className="p-2">{textContent}</p>
           )}
         </div>
         <div className="p-2 flex items-center gap-4">

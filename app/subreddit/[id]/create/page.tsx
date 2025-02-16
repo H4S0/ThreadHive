@@ -1,6 +1,11 @@
 'use client';
 
-import { Card, CardFooter, CardHeader } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from '@/components/ui/card';
 import Image from 'next/image';
 import pfp from '../../../../public/pfp.png';
 import { Separator } from '@/components/ui/separator';
@@ -12,11 +17,11 @@ import { Label } from '@/components/ui/label';
 
 import { useState } from 'react';
 import { createPost } from '@/app/actions';
-import { JSONContent } from '@tiptap/react';
-import { TipTapEditor } from '@/app/components/TipTap';
+
 import SubmitButtons from '@/app/components/SubmitButtons';
 import { UploadDropzone } from '@/app/utils/uploadthing';
 import React from 'react';
+import { Textarea } from '@/components/ui/textarea';
 
 const rules = [
   {
@@ -48,12 +53,8 @@ export default function CreatePostRoute({
 }) {
   const id = React.use(params);
   const [imageUrl, setImageUrl] = useState<null | string>(null);
-  const [json, setJson] = useState<null | JSONContent>(null);
+  const [textContent, setTextContent] = useState<null | string>(null);
   const [title, setTitle] = useState<null | string>(null);
-
-  const createPostReddit = async (formData: FormData) => {
-    await createPost({ jsonContent: json }, formData);
-  };
 
   return (
     <div className="max-w-[1000px] mx-auto flex flex-col lg:flex-row gap-x-10 mt-4 p-4">
@@ -85,7 +86,7 @@ export default function CreatePostRoute({
           </TabsList>
           <TabsContent value="post">
             <Card>
-              <form action={createPostReddit}>
+              <form action={createPost}>
                 <input
                   type="hidden"
                   name="imageUrl"
@@ -102,9 +103,17 @@ export default function CreatePostRoute({
                     onChange={(e) => setTitle(e.target.value)}
                     className="mt-2"
                   />
-
-                  <TipTapEditor setJson={setJson} json={json} />
                 </CardHeader>
+                <CardContent>
+                  <Label className="text-sm font-medium">Description</Label>
+                  <Textarea
+                    placeholder="create description"
+                    name="textContent"
+                    value={textContent ?? ''}
+                    onChange={(e) => setTextContent(e.target.value)}
+                    className="mt-2"
+                  />
+                </CardContent>
                 <CardFooter>
                   <SubmitButtons text="Create Post" />
                 </CardFooter>

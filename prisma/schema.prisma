@@ -9,27 +9,30 @@ datasource db {
 }
 
 model User {
-  id        String  @id
-  email     String
+  id        String   @id @default(uuid())
+  email     String   @unique
   firstName String
   lastName  String
   imageUrl  String?
-  userName  String? @unique
+  userName  String?  @unique
+  createdAt DateTime @default(now())
 
-  createdAt DateTime    @default(now())
-  Subreddit Subreddit[]
-  posts     Post[]
-  votes     Vote[]
+  joinedSubreddits Subreddit[] @relation("UserSubreddit")
+
+  posts Post[]
+  votes Vote[]
 }
 
 model Subreddit {
   id          String   @id @default(uuid())
   name        String   @unique
   description String?
+  members     Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  User        User?    @relation(fields: [userId], references: [id])
   userId      String?
+
+  users User[] @relation("UserSubreddit")
 
   posts Post[]
 }
@@ -37,7 +40,7 @@ model Subreddit {
 model Post {
   id          String  @id @default(uuid())
   title       String
-  textContent Json?
+  textContent String
   imageString String?
 
   votes Vote[]

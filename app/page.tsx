@@ -8,6 +8,7 @@ import Link from 'next/link';
 import CreatePostCard from './components/CreatePostCard';
 import prisma from '@/lib/db';
 import PostCard from './components/PostCard';
+import PopularCard from './components/PopularCard';
 
 async function getData() {
   const data = await prisma.post.findMany({
@@ -19,6 +20,11 @@ async function getData() {
       User: {
         select: {
           userName: true,
+        },
+      },
+      Subreddit: {
+        select: {
+          id: true,
         },
       },
       subName: true,
@@ -38,20 +44,32 @@ async function getData() {
 
   return data;
 }
+
+async function getPopularCommunities() {
+  const popularCommunities = await prisma.subreddit.findMany({
+    select: {
+      name: true,
+      id: true,
+    },
+  });
+  return popularCommunities;
+}
+
 export default async function Home() {
   const data = await getData();
-
+  const popularCommunities = await getPopularCommunities();
   return (
-    <div className="max-w-[1000px] mx-auto flex mt-4 gap-x-10">
-      <div className="w-[65%] flex flex-col gap-y-5">
+    <div className="flex flex-col items-start sm:flex-row sm:max-w-[1000px] sm:mx-auto sm:gap-x-10 sm:mt-2 p-2">
+      <div className="sm:w-[65%] flex flex-col gap-y-5">
         <CreatePostCard />
         {data.map((post) => (
           <PostCard
+            subredditId={post.Subreddit?.id}
             key={post.id}
             id={post.id}
             title={post.title}
-            imageString={post.imageString?.toString()}
-            jsonContent={post.textContent}
+            imageString={post?.imageString as string}
+            textContent={post.textContent}
             subName={post.subName as string}
             userName={post.User?.userName as string}
             voteCount={post.votes.reduce((acc, vote) => {
@@ -63,7 +81,7 @@ export default async function Home() {
           />
         ))}
       </div>
-      <div className="w-[35%] flex flex-col gap-y-5">
+      <div className="w-[35%] hidden flex-col gap-y-5 sm:flex ">
         <Card>
           <Image src={Banner} alt="banner" />
           <div className="p-2 flex flex-col gap-5">
@@ -86,6 +104,17 @@ export default async function Home() {
             <Button asChild>
               <Link href={'/subreddit/create'}>Create Community</Link>
             </Button>
+          </div>
+        </Card>
+        <Card>
+          <div className="p-2 flex flex-col gap-5">
+            {popularCommunities.length > 0 ? (
+              popularCommunities.map((community) => (
+                <PopularCard data={community} key={community.id} />
+              ))
+            ) : (
+              <p>there is no communities</p>
+            )}
           </div>
         </Card>
       </div>
