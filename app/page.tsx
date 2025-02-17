@@ -9,7 +9,8 @@ import CreatePostCard from './components/CreatePostCard';
 import prisma from '@/lib/db';
 import PostCard from './components/PostCard';
 import PopularCard from './components/PopularCard';
-import requireUser from './utils/requireUser';
+
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
 async function getData() {
   const data = await prisma.post.findMany({
@@ -18,6 +19,7 @@ async function getData() {
       createdAt: true,
       textContent: true,
       id: true,
+      voteNumber: true,
       User: {
         select: {
           userName: true,
@@ -30,13 +32,6 @@ async function getData() {
       },
       subName: true,
       imageString: true,
-      votes: {
-        select: {
-          userId: true,
-          voteType: true,
-          postId: true,
-        },
-      },
     },
     orderBy: {
       createdAt: 'desc',
@@ -63,8 +58,9 @@ async function getPopularCommunities() {
 }
 
 export default async function Home() {
-  const user = await requireUser();
-  const userId = user.id;
+  const { getUser } = await getKindeServerSession();
+  const user = await getUser();
+  const userId = user?.id;
   const data = await getData();
   const popularCommunities = await getPopularCommunities();
 
@@ -81,6 +77,7 @@ export default async function Home() {
 
           return (
             <PostCard
+              voteNumber={post.voteNumber}
               isJoined={isJoined}
               subredditId={post.Subreddit?.id}
               key={post.id}
@@ -90,11 +87,6 @@ export default async function Home() {
               textContent={post.textContent}
               subName={post.subName as string}
               userName={post.User?.userName as string}
-              voteCount={post.votes.reduce((acc, vote) => {
-                if (vote.voteType === 'UP') return acc + 1;
-                if (vote.voteType === 'DOWN') return acc - 1;
-                return acc;
-              }, 0)}
             />
           );
         })}

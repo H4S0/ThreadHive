@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import CopyLink from './CopyLink';
-import { handleVote, setJoin } from '../actions';
+import { handleVoteDOWN, handleVoteUP, setJoin } from '../actions';
 import SubmitButtons from './SubmitButtons';
 
 interface postProps {
@@ -15,7 +15,7 @@ interface postProps {
   subName: string;
   userName: string;
   imageString: string | null | undefined;
-  voteCount: number;
+  voteNumber: number;
   subredditId: string | undefined;
   isJoined: boolean;
 }
@@ -29,22 +29,20 @@ const PostCard = ({
   subName,
   userName,
   title,
-  voteCount,
+  voteNumber,
 }: postProps) => {
   return (
     <Card className="flex relative overflow-hidden">
       <div className="flex flex-col items-center gap-y-2 bg-muted p-2">
-        <form action={handleVote}>
+        <form action={handleVoteUP}>
           <input type="hidden" name="postId" value={id} />
-          <input type="hidden" name="voteDirection" value="UP" />
           <Button type="submit" variant="outline" size="sm">
             <ArrowUp className="h-4 w-4" />
           </Button>
         </form>
-        {voteCount}
-        <form action={handleVote}>
+        {voteNumber}
+        <form action={handleVoteDOWN}>
           <input type="hidden" name="postId" value={id} />
-          <input type="hidden" name="voteDirection" value="DOWN" />
           <Button type="submit" variant="outline" size="sm">
             <ArrowDown className="h-4 w-4" />
           </Button>

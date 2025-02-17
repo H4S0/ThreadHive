@@ -1,12 +1,9 @@
 'use server';
 
 import prisma from '@/lib/db';
-import { Prisma, voteType } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import requireUser from './utils/requireUser';
-import { JSONContent } from '@tiptap/react';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-import { revalidatePath } from 'next/cache';
 
 export async function updateUsername(prevState: any, formData: FormData) {
   const user = await requireUser();
@@ -114,50 +111,84 @@ export async function createPost(formData: FormData) {
   return redirect('/');
 }
 
-export async function handleVote(formData: FormData) {
+export async function handleVoteUP(formData: FormData) {
   const user = await requireUser();
-
+  const userId = user.id;
   const postId = formData.get('postId') as string;
-  const voteDirection = formData.get('voteDirection') as voteType;
 
-  const vote = await prisma.vote.findFirst({
+  const post = await prisma.post.findUnique({
     where: {
-      postId: postId,
-      userId: user.id,
+      id: postId,
+    },
+    include: {
+      users: true,
     },
   });
 
-  if (vote) {
-    if (vote.voteType === voteDirection) {
-      await prisma.vote.delete({
-        where: {
-          id: vote.id,
-        },
-      });
-
-      return revalidatePath('/', 'page');
-    } else {
-      await prisma.vote.update({
-        where: {
-          id: vote.id,
-        },
-        data: {
-          voteType: voteDirection,
-        },
-      });
-      return revalidatePath('/', 'page');
-    }
+  if (!post) {
+    throw new Error('post not found');
   }
 
-  await prisma.vote.create({
-    data: {
-      voteType: voteDirection,
-      userId: user.id,
-      postId: postId,
+  if (post.users.some((user) => user.id === userId)) {
+    await prisma.post.update({
+      where: { id: postId },
+      data: {
+        users: { disconnect: { id: userId } },
+        voteNumber: { decrement: 1 },
+      },
+    });
+  } else {
+    await prisma.post.update({
+      where: { id: postId },
+      data: {
+        users: { connect: { id: userId } },
+        voteNumber: { increment: 1 },
+      },
+    });
+  }
+  return redirect('/');
+}
+
+{
+  /* handleVoteDOWN samo obrnuti logiku ukoliko nije votano decrement a ukoliko jeste increment */
+}
+
+export async function handleVoteDOWN(formData: FormData) {
+  const user = await requireUser();
+  const userId = user.id;
+  const postId = formData.get('postId') as string;
+
+  const post = await prisma.post.findUnique({
+    where: {
+      id: postId,
+    },
+    include: {
+      users: true,
     },
   });
 
-  return revalidatePath('/', 'page');
+  if (!post) {
+    throw new Error('post not found');
+  }
+
+  if (post.users.some((user) => user.id === userId)) {
+    await prisma.post.update({
+      where: { id: postId },
+      data: {
+        users: { disconnect: { id: userId } },
+        voteNumber: { increment: 1 },
+      },
+    });
+  } else {
+    await prisma.post.update({
+      where: { id: postId },
+      data: {
+        users: { connect: { id: userId } },
+        voteNumber: { decrement: 1 },
+      },
+    });
+  }
+  return redirect('/');
 }
 
 export async function setJoin(formData: FormData) {
@@ -177,21 +208,19 @@ export async function setJoin(formData: FormData) {
   }
 
   if (subreddit.users.some((user) => user.id === userId)) {
-    // If user is already a member, unjoin (disconnect) and decrement members count
     await prisma.subreddit.update({
       where: { id: subredditId },
       data: {
-        users: { disconnect: { id: userId } }, // Disconnect the user
-        members: { decrement: 1 }, // Decrement the member count
+        users: { disconnect: { id: userId } },
+        members: { decrement: 1 },
       },
     });
   } else {
-    // If user is not a member, join (connect) and increment members count
     await prisma.subreddit.update({
       where: { id: subredditId },
       data: {
-        users: { connect: { id: userId } }, // Connect the user
-        members: { increment: 1 }, // Increment the member count
+        users: { connect: { id: userId } },
+        members: { increment: 1 },
       },
     });
   }

@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from '@/components/ui/card';
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,7 +13,9 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import requireUser from '@/app/utils/requireUser';
 
-import { Heart, TimerIcon } from 'lucide-react';
+import { ArrowDown, ArrowUp, MessageCircle, TimerIcon } from 'lucide-react';
+import CopyLink from '@/app/components/CopyLink';
+import { handleVoteDOWN, handleVoteUP } from '@/app/actions';
 
 async function getData(name: string) {
   const data = await prisma.subreddit.findUnique({
@@ -27,6 +34,7 @@ async function getData(name: string) {
           imageString: true,
           id: true,
           createdAt: true,
+          voteNumber: true,
         },
       },
     },
@@ -38,7 +46,9 @@ async function getData(name: string) {
 const SubredditRoute = async ({ params }: { params: { id: string } }) => {
   const data = await getData(params.id);
   const user = await requireUser();
+  const postId = data?.posts.map((item) => item.id);
   const hoursNow = new Date().getHours();
+
   return (
     <div className="max-w-[1000px] mx-auto mt-4 grid grid-cols-1 md:grid-cols-[65%_35%] gap-5">
       <div className="flex flex-col gap-y-5">
@@ -55,6 +65,32 @@ const SubredditRoute = async ({ params }: { params: { id: string } }) => {
               <Separator />
               <p className="mt-2">{post.textContent}</p>
             </CardContent>
+            <CardFooter>
+              <div className="flex items-center gap-x-4">
+                <div className="flex items-center bg-primary/50 rounded-lg p-1 gap-x-3">
+                  <form action={handleVoteUP}>
+                    <input type="hidden" name="postId" value={postId} />
+                    <button>
+                      <ArrowUp />
+                    </button>
+                  </form>
+                  {post.voteNumber}
+                  <form action={handleVoteDOWN}>
+                    <input type="hidden" name="postId" value={postId} />
+                    <button>
+                      <ArrowDown />
+                    </button>
+                  </form>
+                </div>
+                <div className="flex items-center gap-1">
+                  <MessageCircle className="w-4 h-4 text-muted-foreground" />
+                  <p className="text-muted-foreground font-medium text-sm">
+                    31 Comments
+                  </p>
+                </div>
+                <CopyLink id={postId} />
+              </div>
+            </CardFooter>
           </Card>
         ))}
       </div>
