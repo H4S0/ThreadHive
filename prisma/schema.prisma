@@ -18,9 +18,8 @@ model User {
   createdAt DateTime @default(now())
 
   joinedSubreddits Subreddit[] @relation("UserSubreddit")
-
-  posts Post[]
-  votes Vote[]
+  votedPost        Post[]      @relation("UserVote")
+  posts            Post[]
 }
 
 model Subreddit {
@@ -33,38 +32,20 @@ model Subreddit {
   userId      String?
 
   users User[] @relation("UserSubreddit")
-
   posts Post[]
 }
 
 model Post {
-  id          String  @id @default(uuid())
+  id          String     @id @default(uuid())
   title       String
   textContent String
   imageString String?
-
-  votes Vote[]
-
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  Subreddit Subreddit? @relation(fields: [subName], references: [name])
-  subName   String?
-  User      User?      @relation(fields: [userId], references: [id])
-  userId    String?
-}
-
-enum voteType {
-  UP
-  DOWN
-}
-
-model Vote {
-  id String @id @default(uuid())
-
-  Post   Post?   @relation(fields: [postId], references: [id])
-  postId String?
-  User   User?   @relation(fields: [userId], references: [id])
-  userId String?
-
-  voteType voteType
+  voteNumber  Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Subreddit   Subreddit? @relation(fields: [subName], references: [name])
+  subName     String?
+  User        User?      @relation(fields: [userId], references: [id])
+  userId      String?
+  users       User[]     @relation("UserVote")
 }
