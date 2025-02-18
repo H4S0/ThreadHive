@@ -18,9 +18,11 @@ interface postProps {
   voteNumber: number;
   subredditId: string | undefined;
   isJoined: boolean;
+  commentLength: number;
 }
 
 const PostCard = ({
+  commentLength,
   isJoined,
   subredditId,
   id,
@@ -91,7 +93,7 @@ const PostCard = ({
           <div className="flex items-center gap-1">
             <MessageCircle className="w-4 h-4 text-muted-foreground" />
             <p className="text-muted-foreground font-medium text-sm">
-              31 comments
+              {commentLength}
             </p>
           </div>
           <CopyLink id={id} />

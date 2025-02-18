@@ -23,6 +23,7 @@ async function getData(name: string) {
       name: name,
     },
     select: {
+      id: true,
       name: true,
       createdAt: true,
       description: true,
@@ -48,7 +49,7 @@ const SubredditRoute = async ({ params }: { params: { id: string } }) => {
   const user = await requireUser();
   const postId = data?.posts.map((item) => item.id);
   const hoursNow = new Date().getHours();
-
+  const subredditId = data?.id;
   return (
     <div className="max-w-[1000px] mx-auto mt-4 grid grid-cols-1 md:grid-cols-[65%_35%] gap-5">
       <div className="flex flex-col gap-y-5">
@@ -83,10 +84,12 @@ const SubredditRoute = async ({ params }: { params: { id: string } }) => {
                   </form>
                 </div>
                 <div className="flex items-center gap-1">
-                  <MessageCircle className="w-4 h-4 text-muted-foreground" />
-                  <p className="text-muted-foreground font-medium text-sm">
-                    31 Comments
-                  </p>
+                  <Link href={`/subreddit/${subredditId}/${postId}`}>
+                    <MessageCircle className="w-4 h-4 text-muted-foreground" />
+                    <p className="text-muted-foreground font-medium text-sm">
+                      31 Comments
+                    </p>
+                  </Link>
                 </div>
                 <CopyLink id={postId} />
               </div>

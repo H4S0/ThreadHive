@@ -20,6 +20,7 @@ async function getData() {
       textContent: true,
       id: true,
       voteNumber: true,
+      comment: true,
       User: {
         select: {
           userName: true,
@@ -77,6 +78,7 @@ export default async function Home() {
 
           return (
             <PostCard
+              commentLength={post.comment.length}
               voteNumber={post.voteNumber}
               isJoined={isJoined}
               subredditId={post.Subreddit?.id}

@@ -226,3 +226,17 @@ export async function setJoin(formData: FormData) {
   }
   return redirect('/');
 }
+
+export async function createComment(formData: FormData) {
+  const user = await requireUser();
+
+  const postId = formData.get('postId') as string;
+  const comment = formData.get('comment') as string;
+  await prisma.comment.create({
+    data: {
+      text: comment,
+      userId: user.id,
+      postId: postId,
+    },
+  });
+}
