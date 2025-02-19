@@ -16,6 +16,7 @@ import requireUser from '@/app/utils/requireUser';
 import { ArrowDown, ArrowUp, MessageCircle, TimerIcon } from 'lucide-react';
 import CopyLink from '@/app/components/CopyLink';
 import { handleVoteDOWN, handleVoteUP } from '@/app/actions';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
 async function getData(name: string) {
   const data = await prisma.subreddit.findUnique({
@@ -36,6 +37,7 @@ async function getData(name: string) {
           id: true,
           createdAt: true,
           voteNumber: true,
+          comment: true,
         },
       },
     },
@@ -44,12 +46,24 @@ async function getData(name: string) {
   return data;
 }
 
+async function getSubreddit(id: string) {
+  const subreddit = await prisma.subreddit.findMany({
+    where: { userId: id },
+  });
+  return subreddit;
+}
+
 const SubredditRoute = async ({ params }: { params: { id: string } }) => {
   const data = await getData(params.id);
-  const user = await requireUser();
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+  const subreddit = await getSubreddit(user.id);
   const postId = data?.posts.map((item) => item.id);
   const hoursNow = new Date().getHours();
   const subredditId = data?.id;
+
+  console.log(subreddit.length);
+
   return (
     <div className="max-w-[1000px] mx-auto mt-4 grid grid-cols-1 md:grid-cols-[65%_35%] gap-5">
       <div className="flex flex-col gap-y-5">
@@ -83,14 +97,17 @@ const SubredditRoute = async ({ params }: { params: { id: string } }) => {
                     </button>
                   </form>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Link href={`/subreddit/${subredditId}/${postId}`}>
-                    <MessageCircle className="w-4 h-4 text-muted-foreground" />
-                    <p className="text-muted-foreground font-medium text-sm">
-                      31 Comments
-                    </p>
-                  </Link>
-                </div>
+
+                <Link
+                  href={`/subreddit/${subredditId}/${postId}`}
+                  className="flex items-center gap-x-2"
+                >
+                  <MessageCircle className="w-4 h-4 text-muted-foreground" />
+                  <p className="text-muted-foreground font-medium text-sm">
+                    {post.comment.length}
+                  </p>
+                </Link>
+
                 <CopyLink id={postId} />
               </div>
             </CardFooter>
@@ -132,11 +149,13 @@ const SubredditRoute = async ({ params }: { params: { id: string } }) => {
 
             <Separator className="my-5" />
             <div className="flex flex-col gap-2">
-              <Button className="w-full">
+              <Button className="w-full" asChild>
                 <Link
                   href={
                     user?.id
-                      ? `/subreddit/${data?.name}/create`
+                      ? subreddit.length > 1
+                        ? `napraviti stranicu gdje možemo odabrati subreddit u kojem kreiramo post`
+                        : `/subreddit/${data?.name}/create`
                       : '/api/auth/login'
                   }
                 >

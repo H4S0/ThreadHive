@@ -72,7 +72,7 @@ const PostCard = ({
         </div>
 
         <div className="px-2">
-          <Link href={'/'}>
+          <Link href={`/subreddit/${subName}/${id}`}>
             <h1 className="font-medium mt-1 text-lg">{title}</h1>
           </Link>
         </div>
@@ -90,12 +90,16 @@ const PostCard = ({
           )}
         </div>
         <div className="p-2 flex items-center gap-4">
-          <div className="flex items-center gap-1">
+          <Link
+            href={`/subreddit/${subName}/${id}`}
+            className="flex items-center gap-1"
+          >
             <MessageCircle className="w-4 h-4 text-muted-foreground" />
             <p className="text-muted-foreground font-medium text-sm">
               {commentLength}
             </p>
-          </div>
+          </Link>
+
           <CopyLink id={id} />
         </div>
       </div>
