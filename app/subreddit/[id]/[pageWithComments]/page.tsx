@@ -16,7 +16,7 @@ import CreateComment from '@/app/components/CreateComment';
 async function getSubreddit(name: string) {
   const subreddit = await prisma.subreddit.findUnique({
     where: {
-      id: name,
+      name: name,
     },
     select: {
       id: true,
@@ -72,7 +72,7 @@ const page = async ({
   return (
     <div className="max-w-[1000px] mx-auto mt-4 grid grid-cols-1 md:grid-cols-[65%_35%] gap-5">
       <div>
-        <Card className="p-6 shadow-md bg-white rounded-lg">
+        <Card className="p-6 shadow-md  rounded-lg">
           <h1 className="text-2xl font-bold text-gray-900">{post?.title}</h1>
           <p className="mt-4 text-gray-700">{post?.textContent}</p>
           <Separator />
@@ -95,7 +95,7 @@ const page = async ({
 
             <CopyLink id={pageWithComments} />
           </div>
-          <CreateComment postId={pageWithComments} />
+          <CreateComment postId={pageWithComments} thread={id} />
           <Separator className="mt-2" />
           <CardFooter className="flex flex-col items-start">
             <h2 className="font-semibold text-lg mt-2">All comments</h2>

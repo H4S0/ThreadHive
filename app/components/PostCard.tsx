@@ -5,8 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import CopyLink from './CopyLink';
-import { handleVoteDOWN, handleVoteUP, setJoin } from '../actions';
-import SubmitButtons from './SubmitButtons';
+import { handleVoteDOWN, handleVoteUP } from '../actions';
 
 interface postProps {
   title: string;
@@ -16,15 +15,11 @@ interface postProps {
   userName: string;
   imageString: string | null | undefined;
   voteNumber: number;
-  subredditId: string | undefined;
-  isJoined: boolean;
   commentLength: number;
 }
 
 const PostCard = ({
   commentLength,
-  isJoined,
-  subredditId,
   id,
   imageString,
   textContent,
@@ -62,13 +57,6 @@ const PostCard = ({
           <p className="text-xs text-muted-foreground">
             Posted by: <span className="hover:text-primary">{userName}</span>
           </p>
-          <form action={setJoin}>
-            <input type="hidden" name="subredditId" value={subredditId} />
-            <SubmitButtons
-              text={isJoined ? 'unjoin' : 'join'}
-              className="h-6"
-            />
-          </form>
         </div>
 
         <div className="px-2">

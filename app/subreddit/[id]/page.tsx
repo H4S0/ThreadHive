@@ -11,11 +11,10 @@ import prisma from '@/lib/db';
 import SubDescriptionForm from '@/app/components/SubDescriptionForm';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import requireUser from '@/app/utils/requireUser';
 
 import { ArrowDown, ArrowUp, MessageCircle, TimerIcon } from 'lucide-react';
 import CopyLink from '@/app/components/CopyLink';
-import { handleVoteDOWN, handleVoteUP } from '@/app/actions';
+import { handleVoteDOWN, handleVoteUP, setJoin } from '@/app/actions';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
 async function getData(name: string) {
@@ -53,16 +52,39 @@ async function getSubreddit(id: string) {
   return subreddit;
 }
 
+async function getPopularCommunities() {
+  const popularCommunities = await prisma.subreddit.findMany({
+    select: {
+      name: true,
+      id: true,
+      members: true,
+      users: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
+  return popularCommunities;
+}
+
 const SubredditRoute = async ({ params }: { params: { id: string } }) => {
   const data = await getData(params.id);
   const { getUser } = getKindeServerSession();
   const user = await getUser();
   const subreddit = await getSubreddit(user.id);
+  const popularCommunities = await getPopularCommunities();
   const postId = data?.posts.map((item) => item.id);
   const hoursNow = new Date().getHours();
-  const subredditId = data?.id;
+  const subredditId = data?.name;
 
   console.log(subreddit.length);
+
+  const isJoined = popularCommunities.some(
+    (community) =>
+      community.id === subredditId &&
+      community.users.some((u) => u.id === user.id)
+  );
 
   return (
     <div className="max-w-[1000px] mx-auto mt-4 grid grid-cols-1 md:grid-cols-[65%_35%] gap-5">
@@ -162,9 +184,12 @@ const SubredditRoute = async ({ params }: { params: { id: string } }) => {
                   Create Post
                 </Link>
               </Button>
-              <Button className="w-full" variant="secondary">
-                Join
-              </Button>
+              <form action={setJoin}>
+                <input type="hidden" name="subredditId" value={subredditId} />
+                <Button className="w-full" variant="secondary">
+                  {isJoined ? 'leave' : 'join'}
+                </Button>
+              </form>
             </div>
           </div>
         </Card>

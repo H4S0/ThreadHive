@@ -43,18 +43,31 @@ export async function createSubreddit(prevState: any, formData: FormData) {
 
   try {
     const name = formData.get('name') as string;
-    const data = await prisma.subreddit.create({
+
+    const existingSubreddit = await prisma.subreddit.findFirst({
+      where: { userId: user.id },
+    });
+
+    if (existingSubreddit) {
+      return {
+        message: 'You can only create one thread per user!',
+        status: 'error',
+      };
+    }
+
+    await prisma.subreddit.create({
       data: {
         name: name,
         userId: user.id,
       },
     });
+
     return redirect('/');
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === 'P2002') {
         return {
-          message: 'This community name is already used!',
+          message: 'This thread name is already used!',
           status: 'error',
         };
       }
@@ -149,10 +162,6 @@ export async function handleVoteUP(formData: FormData) {
   return redirect('/');
 }
 
-{
-  /* handleVoteDOWN samo obrnuti logiku ukoliko nije votano decrement a ukoliko jeste increment */
-}
-
 export async function handleVoteDOWN(formData: FormData) {
   const user = await requireUser();
   const userId = user.id;
@@ -204,7 +213,7 @@ export async function setJoin(formData: FormData) {
   });
 
   if (!subreddit) {
-    throw new Error('subreddit not found');
+    throw new Error('thread not found');
   }
 
   if (subreddit.users.some((user) => user.id === userId)) {
@@ -232,6 +241,8 @@ export async function createComment(formData: FormData) {
 
   const postId = formData.get('postId') as string;
   const comment = formData.get('comment') as string;
+  const threadId = formData.get('threadId') as string;
+
   await prisma.comment.create({
     data: {
       text: comment,
@@ -239,4 +250,5 @@ export async function createComment(formData: FormData) {
       postId: postId,
     },
   });
+  return redirect(`/subreddit/${threadId}/${postId}`);
 }
