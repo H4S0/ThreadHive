@@ -45,13 +45,6 @@ async function getData(name: string) {
   return data;
 }
 
-async function getSubreddit(id: string) {
-  const subreddit = await prisma.subreddit.findMany({
-    where: { userId: id },
-  });
-  return subreddit;
-}
-
 async function getPopularCommunities() {
   const popularCommunities = await prisma.subreddit.findMany({
     select: {
@@ -70,16 +63,15 @@ async function getPopularCommunities() {
 
 const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
   const params = await props.params;
-  const data = await getData(params.id);
   const { getUser } = getKindeServerSession();
-  const user = await getUser();
-  const subreddit = await getSubreddit(user.id);
   const popularCommunities = await getPopularCommunities();
-  const postId = data?.posts.map((item) => item.id);
+  const user = await getUser();
+  const data = await getData(params.id);
+
   const hoursNow = new Date().getHours();
   const subredditId = data?.name;
 
-  console.log(subreddit.length);
+  console.log();
 
   const isJoined = popularCommunities.some(
     (community) =>
@@ -107,14 +99,14 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
               <div className="flex items-center gap-x-4">
                 <div className="flex items-center bg-primary/50 rounded-lg p-1 gap-x-3">
                   <form action={handleVoteUP}>
-                    <input type="hidden" name="postId" value={postId} />
+                    <input type="hidden" name="postId" value={post.id} />
                     <button>
                       <ArrowUp />
                     </button>
                   </form>
                   {post.voteNumber}
                   <form action={handleVoteDOWN}>
-                    <input type="hidden" name="postId" value={postId} />
+                    <input type="hidden" name="postId" value={post.id} />
                     <button>
                       <ArrowDown />
                     </button>
@@ -122,7 +114,7 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
                 </div>
 
                 <Link
-                  href={`/subreddit/${subredditId}/${postId}`}
+                  href={`/subreddit/${subredditId}/${post.id}`}
                   className="flex items-center gap-x-2"
                 >
                   <MessageCircle className="w-4 h-4 text-muted-foreground" />
@@ -131,7 +123,7 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
                   </p>
                 </Link>
 
-                <CopyLink id={postId} />
+                <CopyLink id={post.id} />
               </div>
             </CardFooter>
           </Card>
@@ -176,9 +168,7 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
                 <Link
                   href={
                     user?.id
-                      ? subreddit.length > 1
-                        ? `napraviti stranicu gdje možemo odabrati subreddit u kojem kreiramo post`
-                        : `/subreddit/${data?.name}/create`
+                      ? `/subreddit/${data?.name}/create`
                       : '/api/auth/login'
                   }
                 >

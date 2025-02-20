@@ -38,6 +38,7 @@ async function getPost(id: string) {
       title: true,
       textContent: true,
       voteNumber: true,
+      imageString: true,
       comment: {
         select: {
           createdAt: true,
@@ -73,6 +74,12 @@ const page = async (props: {
         <Card className="p-6 shadow-md  rounded-lg">
           <h1 className="text-2xl font-bold ">{post?.title}</h1>
           <p className="mt-4">{post?.textContent}</p>
+          <Image
+            src={post?.imageString || ''}
+            alt="post-image"
+            width={300}
+            height={150}
+          />
           <Separator />
           <div className="flex items-center gap-x-4 mt-2">
             <div className="flex items-center bg-primary/50 rounded-lg p-1 gap-x-3">
@@ -101,12 +108,12 @@ const page = async (props: {
               post?.comment.map((item) => (
                 <div key={item.id} className="flex items-center gap-x-3 mt-3">
                   <Image
-                    src={item.User?.imageUrl ?? undefined}
+                    src={item.User?.imageUrl || ''}
                     alt="user-profile"
                     width={35}
                     height={35}
-                    className="rounded-full "
                   />
+
                   <div className="flex flex-col items-start">
                     <p className="text-muted-foreground text-sm font-medium">
                       {item.createdAt.toISOString().split('', 10)}
