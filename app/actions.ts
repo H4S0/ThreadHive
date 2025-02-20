@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
 import prisma from '@/lib/db';
@@ -111,7 +112,7 @@ export async function createPost(formData: FormData) {
   const subName = formData.get('subName') as string;
   const textContent = formData.get('textContent') as string;
 
-  const data = await prisma.post.create({
+  await prisma.post.create({
     data: {
       title: title,
       imageString: imageUrl ?? undefined,

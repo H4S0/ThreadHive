@@ -130,7 +130,7 @@ export default function CreatePostRoute({
                       setImageUrl(res[0].url);
                     }}
                     onUploadError={(error: Error) => {
-                      alert('Error');
+                      alert(error);
                     }}
                   />
                 ) : (

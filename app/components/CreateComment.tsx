@@ -6,7 +6,13 @@ import { Textarea } from '@/components/ui/textarea';
 import React, { useState } from 'react';
 import { createComment } from '../actions';
 
-const CreateComment = ({ postId, thread }: any) => {
+const CreateComment = ({
+  postId,
+  thread,
+}: {
+  postId: string;
+  thread: string;
+}) => {
   const [comment, setComment] = useState<string | null>(null);
 
   return (

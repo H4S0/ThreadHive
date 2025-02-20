@@ -1,8 +1,8 @@
 import prisma from '@/lib/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { generateUsername } from 'unique-username-generator';
-export async function GET(req: NextRequest) {
+export async function GET() {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 

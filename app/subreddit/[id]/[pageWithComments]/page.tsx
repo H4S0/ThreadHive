@@ -10,7 +10,6 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { handleVoteDOWN, handleVoteUP } from '@/app/actions';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import CopyLink from '@/app/components/CopyLink';
-
 import CreateComment from '@/app/components/CreateComment';
 
 async function getSubreddit(name: string) {
@@ -58,12 +57,11 @@ async function getPost(id: string) {
   return post;
 }
 
-const page = async ({
-  params,
-}: {
-  params: { id: string; pageWithComments: string };
+const page = async (props: {
+  params: Promise<{ id: string; pageWithComments: string }>;
 }) => {
-  const { id, pageWithComments } = params;
+  const params = await props.params;
+  const { id, pageWithComments } = await params;
   const subreddit = await getSubreddit(id);
   const post = await getPost(pageWithComments);
   const { getUser } = getKindeServerSession();
@@ -99,7 +97,7 @@ const page = async ({
           <Separator className="mt-2" />
           <CardFooter className="flex flex-col items-start">
             <h2 className="font-semibold text-lg mt-2">All comments</h2>
-            {post?.comment?.length > 0 ? (
+            {post?.comment?.length ? (
               post?.comment.map((item) => (
                 <div key={item.id} className="flex items-center gap-x-3 mt-3">
                   <Image
@@ -119,7 +117,7 @@ const page = async ({
               ))
             ) : (
               <p className="text-lg mt-2 text-muted-foreground">
-                This post doesn't have any comments.
+                There is no comments yet. Be first!!
               </p>
             )}
           </CardFooter>

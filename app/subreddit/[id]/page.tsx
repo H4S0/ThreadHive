@@ -68,7 +68,8 @@ async function getPopularCommunities() {
   return popularCommunities;
 }
 
-const SubredditRoute = async ({ params }: { params: { id: string } }) => {
+const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
+  const params = await props.params;
   const data = await getData(params.id);
   const { getUser } = getKindeServerSession();
   const user = await getUser();
