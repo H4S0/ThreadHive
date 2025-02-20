@@ -73,8 +73,8 @@ const page = async ({
     <div className="max-w-[1000px] mx-auto mt-4 grid grid-cols-1 md:grid-cols-[65%_35%] gap-5">
       <div>
         <Card className="p-6 shadow-md  rounded-lg">
-          <h1 className="text-2xl font-bold text-gray-900">{post?.title}</h1>
-          <p className="mt-4 text-gray-700">{post?.textContent}</p>
+          <h1 className="text-2xl font-bold ">{post?.title}</h1>
+          <p className="mt-4">{post?.textContent}</p>
           <Separator />
           <div className="flex items-center gap-x-4 mt-2">
             <div className="flex items-center bg-primary/50 rounded-lg p-1 gap-x-3">
@@ -99,23 +99,29 @@ const page = async ({
           <Separator className="mt-2" />
           <CardFooter className="flex flex-col items-start">
             <h2 className="font-semibold text-lg mt-2">All comments</h2>
-            {post?.comment.map((item) => (
-              <div key={item.id} className="flex items-center gap-x-3 mt-3">
-                <Image
-                  src={item.User?.imageUrl ?? undefined}
-                  alt="user-profile"
-                  width={35}
-                  height={35}
-                  className="rounded-full "
-                />
-                <div className="flex flex-col items-start">
-                  <p className="text-muted-foreground text-sm font-medium">
-                    {item.createdAt.toISOString().split('', 10)}
-                  </p>
-                  <p className="text-sm">{item.text}</p>
+            {post?.comment?.length > 0 ? (
+              post?.comment.map((item) => (
+                <div key={item.id} className="flex items-center gap-x-3 mt-3">
+                  <Image
+                    src={item.User?.imageUrl ?? undefined}
+                    alt="user-profile"
+                    width={35}
+                    height={35}
+                    className="rounded-full "
+                  />
+                  <div className="flex flex-col items-start">
+                    <p className="text-muted-foreground text-sm font-medium">
+                      {item.createdAt.toISOString().split('', 10)}
+                    </p>
+                    <p className="text-sm">{item.text}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-lg mt-2 text-muted-foreground">
+                This post doesn't have any comments.
+              </p>
+            )}
           </CardFooter>
         </Card>
       </div>
