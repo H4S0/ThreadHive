@@ -7,11 +7,10 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import Image from 'next/image';
-import pfp from '../../../../public/pfp.png';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Text, Video } from 'lucide-react';
+import { Text, Video, Waypoints } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -151,7 +150,7 @@ export default function CreatePostRoute({
       <div className="w-full lg:w-[35%] mt-8 lg:mt-0">
         <Card className="flex flex-col p-4">
           <div className="flex items-center gap-x-2">
-            <Image className="h-10 w-10 rounded-full" src={pfp} alt="pfp" />
+            <Waypoints className="h-12 w-fit text-primary animate-spin" />
             <h1 className="font-medium text-lg">Posting to Reddit</h1>
           </div>
           <Separator className="mt-2" />

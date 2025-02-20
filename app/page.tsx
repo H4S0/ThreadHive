@@ -84,14 +84,8 @@ export default async function Home() {
         <Card>
           <Image src={Banner} alt="banner" />
           <div className="p-2 flex flex-col gap-5">
-            <div className="flex items-center">
-              <Image
-                src={HelloImage}
-                alt="hello-image"
-                className="w-10 h-16 -mt-7"
-              />
-              <h1 className="font-medium pl-3">Home</h1>
-            </div>
+            <h1 className="font-medium pl-3">Home</h1>
+
             <p className="text-sm text-muted-foreground ">
               Your Home ThreadHive frontpage. Come here to check in with your
               favorite communities.

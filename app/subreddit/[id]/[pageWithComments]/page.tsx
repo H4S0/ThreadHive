@@ -141,7 +141,7 @@ const page = async ({
                 href={`/subreddit/${subreddit?.name}`}
                 className="font-medium"
               >
-                subreddit/{subreddit?.name}
+                thread/{subreddit?.name}
               </Link>
             </div>
             {user?.id === subreddit?.userId ? (

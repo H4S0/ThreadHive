@@ -150,7 +150,7 @@ const SubredditRoute = async ({ params }: { params: { id: string } }) => {
                 className="rounded-full"
               />
               <Link href={`/subreddit/${data?.name}`} className="font-medium">
-                subreddit/{data?.name}
+                thread/{data?.name}
               </Link>
             </div>
             {user?.id === data?.userId ? (
