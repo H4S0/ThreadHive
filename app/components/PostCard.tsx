@@ -71,7 +71,7 @@ const PostCard = ({
               alt="Post image"
               width={600}
               height={300}
-              className="w-full h-full"
+              className="w-full h-full p-2"
             />
           ) : (
             <p className="p-2">{textContent}</p>

@@ -12,7 +12,7 @@ import SubDescriptionForm from '@/app/components/SubDescriptionForm';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 
-import { ArrowDown, ArrowUp, MessageCircle, TimerIcon } from 'lucide-react';
+import { ArrowDown, ArrowUp, MessageCircle } from 'lucide-react';
 import CopyLink from '@/app/components/CopyLink';
 import { handleVoteDOWN, handleVoteUP, setJoin } from '@/app/actions';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
@@ -45,7 +45,7 @@ async function getData(name: string) {
   return data;
 }
 
-async function getPopularCommunities() {
+export async function getPopularCommunities() {
   const popularCommunities = await prisma.subreddit.findMany({
     select: {
       name: true,
@@ -68,8 +68,7 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
   const user = await getUser();
   const data = await getData(params.id);
 
-  const hoursNow = new Date().getHours();
-  const subredditId = data?.name;
+  const subredditId = data?.id;
 
   console.log();
 
@@ -86,10 +85,6 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
           <Card key={post.id} className="p-4">
             <CardHeader className="flex flex-row items-center gap-x-3">
               <p className="font-semibold text-xl">{post.title}</p>
-              <div className="flex items-center">
-                <TimerIcon className="w-4 h-4" />
-                <p>{hoursNow - post.createdAt.getHours()}hr. ago</p>
-              </div>
             </CardHeader>
             <CardContent>
               <Separator />

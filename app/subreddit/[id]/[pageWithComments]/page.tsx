@@ -7,10 +7,11 @@ import React from 'react';
 import Image from 'next/image';
 import prisma from '@/lib/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-import { handleVoteDOWN, handleVoteUP } from '@/app/actions';
+import { handleVoteDOWN, handleVoteUP, setJoin } from '@/app/actions';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import CopyLink from '@/app/components/CopyLink';
 import CreateComment from '@/app/components/CreateComment';
+import { getPopularCommunities } from '../page';
 
 async function getSubreddit(name: string) {
   const subreddit = await prisma.subreddit.findUnique({
@@ -63,23 +64,34 @@ const page = async (props: {
 }) => {
   const params = await props.params;
   const { id, pageWithComments } = await params;
-  const subreddit = await getSubreddit(id);
-  const post = await getPost(pageWithComments);
   const { getUser } = getKindeServerSession();
   const user = await getUser();
+  const popularCommunities = await getPopularCommunities();
+  const subreddit = await getSubreddit(id);
+  const post = await getPost(pageWithComments);
+
+  const isJoined = popularCommunities.some(
+    (community) =>
+      community.id === subreddit?.id &&
+      community.users.some((u) => u.id === user.id)
+  );
 
   return (
     <div className="max-w-[1000px] mx-auto mt-4 grid grid-cols-1 md:grid-cols-[65%_35%] gap-5">
       <div>
         <Card className="p-6 shadow-md  rounded-lg">
           <h1 className="text-2xl font-bold ">{post?.title}</h1>
-          <p className="mt-4">{post?.textContent}</p>
-          <Image
-            src={post?.imageString || ''}
-            alt="post-image"
-            width={300}
-            height={150}
-          />
+          {post?.imageString ? (
+            <Image
+              src={post.imageString}
+              alt="post-image"
+              width={300}
+              height={150}
+              className="p-2"
+            />
+          ) : (
+            <p className="p-2">{post?.textContent}</p>
+          )}
           <Separator />
           <div className="flex items-center gap-x-4 mt-2">
             <div className="flex items-center bg-primary/50 rounded-lg p-1 gap-x-3">
@@ -178,9 +190,12 @@ const page = async (props: {
                   Create Post
                 </Link>
               </Button>
-              <Button className="w-full" variant="secondary">
-                Join
-              </Button>
+              <form action={setJoin}>
+                <input type="hidden" name="subredditId" value={subreddit?.id} />
+                <Button className="w-full" variant="secondary">
+                  {isJoined ? 'leave' : 'join'}
+                </Button>
+              </form>
             </div>
           </div>
         </Card>

@@ -26,6 +26,7 @@ const CreateComment = ({
         value={comment ?? undefined}
         onChange={(e) => setComment(e.target.value)}
         required
+        className="mt-2"
       />
       <Button variant="secondary" className="mt-2" type="submit">
         Post comment
