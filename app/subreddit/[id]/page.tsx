@@ -109,7 +109,7 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
                 </div>
 
                 <Link
-                  href={`/subreddit/${subredditId}/${post.id}`}
+                  href={`/subreddit/${data.name}/${post.id}`}
                   className="flex items-center gap-x-2"
                 >
                   <MessageCircle className="w-4 h-4 text-muted-foreground" />
