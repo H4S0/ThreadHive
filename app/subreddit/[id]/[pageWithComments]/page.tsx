@@ -11,7 +11,22 @@ import { handleVoteDOWN, handleVoteUP, setJoin } from '@/app/actions';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import CopyLink from '@/app/components/CopyLink';
 import CreateComment from '@/app/components/CreateComment';
-import { getPopularCommunities } from '../page';
+
+async function getPopularCommunities() {
+  const popularCommunities = await prisma.subreddit.findMany({
+    select: {
+      name: true,
+      id: true,
+      members: true,
+      users: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
+  return popularCommunities;
+}
 
 async function getSubreddit(name: string) {
   const subreddit = await prisma.subreddit.findUnique({

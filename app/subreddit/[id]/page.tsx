@@ -45,7 +45,7 @@ async function getData(name: string) {
   return data;
 }
 
-export async function getPopularCommunities() {
+async function getPopularCommunities() {
   const popularCommunities = await prisma.subreddit.findMany({
     select: {
       name: true,
