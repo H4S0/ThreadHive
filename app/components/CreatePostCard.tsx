@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ImageDown, Waypoints } from 'lucide-react';
 
-const CreatePostCard = () => {
+const CreatePostCard = ({ user }) => {
   return (
     <Card className="px-4 py-2 flex items-center gap-x-4">
       <Waypoints className="h-12 w-fit text-primary animate-spin" />
-      <Link href={`/postHome`} className="w-full">
+      <Link href={user ? `/postHome` : '/api/auth/login'} className="w-full">
         <Input placeholder="Create your post" />
       </Link>
 

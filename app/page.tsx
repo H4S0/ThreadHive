@@ -8,6 +8,7 @@ import CreatePostCard from './components/CreatePostCard';
 import prisma from '@/lib/db';
 import PostCard from './components/PostCard';
 import PopularCard from './components/PopularCard';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
 async function getData() {
   const data = await prisma.post.findMany({
@@ -58,11 +59,12 @@ async function getPopularCommunities() {
 export default async function Home() {
   const data = await getData();
   const popularCommunities = await getPopularCommunities();
-
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
   return (
     <div className="flex flex-col sm:flex-row sm:max-w-[1000px] sm:mx-auto sm:gap-x-10 sm:mt-2 p-2">
       <div className="sm:w-[65%] flex flex-col gap-y-5">
-        <CreatePostCard />
+        <CreatePostCard user={user} />
         {data.map((post) => {
           return (
             <PostCard
