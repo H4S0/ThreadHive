@@ -6,8 +6,8 @@ import React from 'react';
 import Image from 'next/image';
 import prisma from '@/lib/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-import { handleVoteDOWN, handleVoteUP, setJoin } from '@/app/actions';
-import { ArrowDown, ArrowUp } from 'lucide-react';
+import { handleDislike, handleLike, setJoin } from '@/app/actions';
+import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import CopyLink from '@/app/components/CopyLink';
 import CreateComment from '@/app/components/CreateComment';
 import SubDescriptionForm from '@/app/components/SubDescriptionForm';
@@ -53,7 +53,8 @@ async function getPost(id: string) {
     select: {
       title: true,
       textContent: true,
-      voteNumber: true,
+      like: true,
+      disLike: true,
       imageString: true,
       comment: {
         select: {
@@ -109,18 +110,23 @@ const page = async (props: {
           )}
           <Separator />
           <div className="flex items-center gap-x-4 mt-2">
-            <div className="flex items-center bg-primary/50 rounded-lg p-1 gap-x-3">
-              <form action={handleVoteUP}>
+            <div className="flex items-center bg-primary/50 rounded-lg gap-x-3 p-2">
+              <form action={handleLike} className="flex items-center gap-x-2">
                 <input type="hidden" name="postId" value={pageWithComments} />
+                {post?.like}
                 <button>
-                  <ArrowUp />
+                  <ThumbsUp />
                 </button>
               </form>
-              {post?.voteNumber}
-              <form action={handleVoteDOWN}>
+
+              <form
+                action={handleDislike}
+                className="flex items-center gap-x-2"
+              >
                 <input type="hidden" name="postId" value={pageWithComments} />
+                {post?.disLike}
                 <button>
-                  <ArrowDown />
+                  <ThumbsDown />
                 </button>
               </form>
             </div>

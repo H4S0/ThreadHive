@@ -12,7 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, ThumbsDown, ThumbsUp } from 'lucide-react';
 import CopyLink from '@/app/components/CopyLink';
-import { handleVoteDOWN, handleVoteUP, setJoin } from '@/app/actions';
+import { handleDislike, handleLike, setJoin } from '@/app/actions';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import SubDescriptionForm from '@/app/components/SubDescriptionForm';
 
@@ -34,7 +34,8 @@ async function getData(name: string) {
           imageString: true,
           id: true,
           createdAt: true,
-          voteNumber: true,
+          like: true,
+          disLike: true,
           comment: true,
         },
       },
@@ -96,16 +97,23 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
               </CardContent>
               <CardFooter>
                 <div className="flex items-center gap-x-4">
-                  <div className="flex items-center bg-primary/50 rounded-lg p-1 gap-x-3">
-                    <form action={handleVoteUP}>
+                  <div className="flex items-center bg-primary/50 rounded-lg p-2 gap-x-3">
+                    <form
+                      action={handleLike}
+                      className="flex items-center gap-x-2"
+                    >
                       <input type="hidden" name="postId" value={post.id} />
+                      {post?.like}
                       <button>
                         <ThumbsUp />
                       </button>
                     </form>
-                    {post.voteNumber}
-                    <form action={handleVoteDOWN}>
+                    <form
+                      action={handleDislike}
+                      className="flex items-center gap-x-2"
+                    >
                       <input type="hidden" name="postId" value={post.id} />
+                      {post?.disLike}
                       <button>
                         <ThumbsDown />
                       </button>
