@@ -41,7 +41,8 @@ model Post {
   title       String
   textContent String
   imageString String?
-  voteNumber  Int        @default(0)
+  like        Int        @default(0)
+  disLike     Int        @default(0)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   Subreddit   Subreddit? @relation(fields: [subName], references: [name])
