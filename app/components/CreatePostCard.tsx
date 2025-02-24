@@ -5,7 +5,15 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ImageDown, Waypoints } from 'lucide-react';
 
-const CreatePostCard = ({ user }) => {
+type UserType = {
+  id: string | null;
+  given_name: string | null;
+  family_name: string | null;
+  email: string | null;
+  picture: string | null;
+};
+
+const CreatePostCard = ({ user }: { user: UserType }) => {
   return (
     <Card className="px-4 py-2 flex items-center gap-x-4">
       <Waypoints className="h-12 w-fit text-primary animate-spin" />
