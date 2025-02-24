@@ -1,4 +1,3 @@
-import SubDescriptionForm from '@/app/components/SubDescriptionForm';
 import { Button } from '@/components/ui/button';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -11,6 +10,7 @@ import { handleVoteDOWN, handleVoteUP, setJoin } from '@/app/actions';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import CopyLink from '@/app/components/CopyLink';
 import CreateComment from '@/app/components/CreateComment';
+import SubDescriptionForm from '@/app/components/SubDescriptionForm';
 
 async function getPopularCommunities() {
   const popularCommunities = await prisma.subreddit.findMany({
@@ -139,6 +139,7 @@ const page = async (props: {
                     alt="user-profile"
                     width={35}
                     height={35}
+                    className="rounded-full"
                   />
 
                   <div className="flex flex-col items-start">

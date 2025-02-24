@@ -61,6 +61,7 @@ export default async function Home() {
   const popularCommunities = await getPopularCommunities();
   const { getUser } = getKindeServerSession();
   const user = await getUser();
+
   return (
     <div className="flex flex-col sm:flex-row sm:max-w-[1000px] sm:mx-auto sm:gap-x-10 sm:mt-2 p-2">
       <div className="sm:w-[65%] flex flex-col gap-y-5">
@@ -101,9 +102,11 @@ export default async function Home() {
         <Card>
           <div className="p-3 flex flex-col">
             {popularCommunities.length > 0 ? (
-              popularCommunities.map((community) => (
-                <PopularCard data={community} key={community.id} />
-              ))
+              [...popularCommunities]
+                .sort((a, b) => b.members - a.members)
+                .map((community) => (
+                  <PopularCard data={community} key={community.id} />
+                ))
             ) : (
               <p>there is no communities</p>
             )}

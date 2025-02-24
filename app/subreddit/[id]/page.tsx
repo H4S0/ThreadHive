@@ -8,7 +8,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import prisma from '@/lib/db';
-import SubDescriptionForm from '@/app/components/SubDescriptionForm';
+
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 
@@ -16,6 +16,7 @@ import { ArrowDown, ArrowUp, MessageCircle } from 'lucide-react';
 import CopyLink from '@/app/components/CopyLink';
 import { handleVoteDOWN, handleVoteUP, setJoin } from '@/app/actions';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import SubDescriptionForm from '@/app/components/SubDescriptionForm';
 
 async function getData(name: string) {
   const data = await prisma.subreddit.findUnique({
@@ -183,7 +184,7 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
               <form action={setJoin}>
                 <input type="hidden" name="subredditId" value={subredditId} />
                 <Button className="w-full" variant="secondary">
-                  {isJoined ? 'leave' : 'join'}
+                  {isJoined ? 'LEAVE' : 'JOIN'}
                 </Button>
               </form>
             </div>

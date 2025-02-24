@@ -47,6 +47,7 @@ const SubDescriptionForm = ({ name, description }: formProps) => {
         maxLength={120}
         name="description"
         defaultValue={description ?? undefined}
+        className="mt-2 max-h-44 overflow-y-auto"
       />
       <SubmitButtons text="Save" className="mt-3 w-full" />
     </form>

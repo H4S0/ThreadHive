@@ -88,7 +88,7 @@ export default function CreatePostRoute({
                     name="textContent"
                     value={textContent ?? ''}
                     onChange={(e) => setTextContent(e.target.value)}
-                    className="mt-2"
+                    className="mt-2 max-h-44 overflow-y-auto"
                   />
                 </CardContent>
                 <CardFooter>
