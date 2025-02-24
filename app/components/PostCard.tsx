@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowDown, ArrowUp, MessageCircle } from 'lucide-react';
+import { ThumbsDown, ThumbsUp, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import CopyLink from './CopyLink';
-import { handleVoteDOWN, handleVoteUP } from '../actions';
+import { handleLike, handleDislike } from '../actions';
 
 interface postProps {
   title: string;
@@ -14,9 +14,10 @@ interface postProps {
   subName: string;
   userName: string;
   imageString: string | null | undefined;
-  voteNumber: number;
   commentLength: number;
   createdAt: Date;
+  likeNumber: number;
+  disLikeNumber: number;
 }
 
 const PostCard = ({
@@ -27,24 +28,31 @@ const PostCard = ({
   subName,
   userName,
   title,
-  voteNumber,
+  likeNumber,
+  disLikeNumber,
   createdAt,
 }: postProps) => {
   return (
     <Card className="flex relative overflow-hidden">
-      <div className="flex flex-col items-center gap-y-2 bg-muted p-2">
-        <form action={handleVoteUP}>
+      <div className="flex flex-col justify-around bg-muted p-2 h-full">
+        <form action={handleLike}>
           <input type="hidden" name="postId" value={id} />
-          <Button type="submit" variant="outline" size="sm">
-            <ArrowUp className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button type="submit" variant="outline" size="sm">
+              <ThumbsUp className="h-4 w-4" />
+            </Button>
+            <p>{likeNumber}</p>
+          </div>
         </form>
-        {voteNumber}
-        <form action={handleVoteDOWN}>
+
+        <form action={handleDislike}>
           <input type="hidden" name="postId" value={id} />
-          <Button type="submit" variant="outline" size="sm">
-            <ArrowDown className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button type="submit" variant="outline" size="sm">
+              <ThumbsDown className="h-4 w-4" />
+            </Button>
+            <p>{disLikeNumber}</p>
+          </div>
         </form>
       </div>
 

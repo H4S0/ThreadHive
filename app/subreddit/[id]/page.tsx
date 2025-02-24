@@ -8,11 +8,9 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import prisma from '@/lib/db';
-
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-
-import { ArrowDown, ArrowUp, MessageCircle } from 'lucide-react';
+import { MessageCircle, ThumbsDown, ThumbsUp } from 'lucide-react';
 import CopyLink from '@/app/components/CopyLink';
 import { handleVoteDOWN, handleVoteUP, setJoin } from '@/app/actions';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
@@ -102,14 +100,14 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
                     <form action={handleVoteUP}>
                       <input type="hidden" name="postId" value={post.id} />
                       <button>
-                        <ArrowUp />
+                        <ThumbsUp />
                       </button>
                     </form>
                     {post.voteNumber}
                     <form action={handleVoteDOWN}>
                       <input type="hidden" name="postId" value={post.id} />
                       <button>
-                        <ArrowDown />
+                        <ThumbsDown />
                       </button>
                     </form>
                   </div>

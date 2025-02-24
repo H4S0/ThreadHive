@@ -17,7 +17,8 @@ async function getData() {
       createdAt: true,
       textContent: true,
       id: true,
-      voteNumber: true,
+      like: true,
+      disLike: true,
       comment: true,
       User: {
         select: {
@@ -70,7 +71,8 @@ export default async function Home() {
           return (
             <PostCard
               commentLength={post.comment.length}
-              voteNumber={post.voteNumber}
+              likeNumber={post.like}
+              disLikeNumber={post.disLike}
               key={post.id}
               id={post.id}
               title={post.title}

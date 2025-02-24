@@ -125,7 +125,7 @@ export async function createPost(formData: FormData) {
   return redirect('/');
 }
 
-export async function handleVoteUP(formData: FormData) {
+export async function handleLike(formData: FormData) {
   const user = await requireUser();
   const userId = user.id;
   const postId = formData.get('postId') as string;
@@ -148,7 +148,7 @@ export async function handleVoteUP(formData: FormData) {
       where: { id: postId },
       data: {
         users: { disconnect: { id: userId } },
-        voteNumber: { decrement: 1 },
+        like: { decrement: 1 },
       },
     });
   } else {
@@ -156,14 +156,14 @@ export async function handleVoteUP(formData: FormData) {
       where: { id: postId },
       data: {
         users: { connect: { id: userId } },
-        voteNumber: { increment: 1 },
+        like: { increment: 1 },
       },
     });
   }
   return redirect('/');
 }
 
-export async function handleVoteDOWN(formData: FormData) {
+export async function handleDislike(formData: FormData) {
   const user = await requireUser();
   const userId = user.id;
   const postId = formData.get('postId') as string;
@@ -186,7 +186,7 @@ export async function handleVoteDOWN(formData: FormData) {
       where: { id: postId },
       data: {
         users: { disconnect: { id: userId } },
-        voteNumber: { increment: 1 },
+        disLike: { decrement: 1 },
       },
     });
   } else {
@@ -194,7 +194,7 @@ export async function handleVoteDOWN(formData: FormData) {
       where: { id: postId },
       data: {
         users: { connect: { id: userId } },
-        voteNumber: { decrement: 1 },
+        disLike: { increment: 1 },
       },
     });
   }
