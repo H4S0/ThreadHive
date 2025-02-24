@@ -1,50 +1,57 @@
 'use client';
 
+import { useState } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Video, Text } from 'lucide-react';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from '@/components/ui/card';
-import Image from 'next/image';
-import { Separator } from '@/components/ui/separator';
-import Link from 'next/link';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Text, Video, Waypoints } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-import { useState } from 'react';
-import { createPost } from '@/app/actions';
-
-import SubmitButtons from '@/app/components/SubmitButtons';
-import { UploadDropzone } from '@/app/utils/uploadthing';
-import React from 'react';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { rules } from '@/app/data/rules';
+import SubmitButtons from './SubmitButtons';
+import { UploadDropzone } from '../utils/uploadthing';
+import Image from 'next/image';
+import { createPost } from '../actions';
 
-export default function CreatePostRoute({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const id = React.use(params);
+interface SelectThreadProps {
+  subreddit: { id: string; name: string }[];
+}
+
+const SelectThread = ({ subreddit }: SelectThreadProps) => {
+  const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<null | string>(null);
   const [textContent, setTextContent] = useState<null | string>(null);
   const [title, setTitle] = useState<null | string>(null);
 
   return (
-    <div className="max-w-[1000px] mx-auto flex flex-col lg:flex-row gap-x-10 mt-4 p-4">
-      <div className="w-full lg:w-[65%] flex flex-col gap-y-5">
-        <h1 className="font-semibold text-lg">
-          Thread:{' '}
-          <Link
-            href={`/subreddit/${id.id}`}
-            className="text-primary hover:underline"
-          >
-            thread/{id.id}
-          </Link>
-        </h1>
+    <div>
+      <Select onValueChange={(value) => setSelectedThreadId(value)}>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Choose thread where you want to create post" />
+        </SelectTrigger>
+        <SelectContent>
+          {subreddit.map((item) => (
+            <SelectItem key={item.id} value={item.name}>
+              {item.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Separator className="my-4" />
+
+      <div>
         <Tabs defaultValue="post" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger
@@ -69,7 +76,11 @@ export default function CreatePostRoute({
                   name="imageUrl"
                   value={imageUrl ?? undefined}
                 />
-                <input type="hidden" name="subName" value={id.id} />
+                <input
+                  type="hidden"
+                  name="subName"
+                  value={selectedThreadId ?? undefined}
+                />
                 <CardHeader>
                   <Label className="text-sm font-medium">Title</Label>
                   <Input
@@ -88,7 +99,7 @@ export default function CreatePostRoute({
                     name="textContent"
                     value={textContent ?? ''}
                     onChange={(e) => setTextContent(e.target.value)}
-                    className="mt-2"
+                    className="mt-2 max-h-44 overflow-y-auto"
                   />
                 </CardContent>
                 <CardFooter>
@@ -125,26 +136,8 @@ export default function CreatePostRoute({
           </TabsContent>
         </Tabs>
       </div>
-      <div className="w-full lg:w-[35%] mt-8 lg:mt-0">
-        <Card className="flex flex-col p-4">
-          <div className="flex items-center gap-x-2">
-            <Waypoints className="h-12 w-fit text-primary animate-spin" />
-            <h1 className="font-medium text-lg">Posting to Reddit</h1>
-          </div>
-          <Separator className="mt-2" />
-
-          <div className="flex flex-col gap-y-5 mt-5">
-            {rules.map((item) => (
-              <div key={item.id}>
-                <p className="text-sm font-medium">
-                  {item.id}. {item.text}
-                </p>
-                <Separator className="mt-2" />
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
     </div>
   );
-}
+};
+
+export default SelectThread;

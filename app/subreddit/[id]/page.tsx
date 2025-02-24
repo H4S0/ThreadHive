@@ -78,51 +78,61 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
       community.users.some((u) => u.id === user.id)
   );
 
+  if (!data) {
+    return <p>loading..</p>;
+  }
+
   return (
     <div className="max-w-[1000px] mx-auto mt-4 grid grid-cols-1 md:grid-cols-[65%_35%] gap-5">
       <div className="flex flex-col gap-y-5">
-        {data?.posts.map((post) => (
-          <Card key={post.id} className="p-4">
-            <CardHeader className="flex flex-row items-center gap-x-3">
-              <p className="font-semibold text-xl">{post.title}</p>
-            </CardHeader>
-            <CardContent>
-              <Separator />
-              <p className="mt-2">{post.textContent}</p>
-            </CardContent>
-            <CardFooter>
-              <div className="flex items-center gap-x-4">
-                <div className="flex items-center bg-primary/50 rounded-lg p-1 gap-x-3">
-                  <form action={handleVoteUP}>
-                    <input type="hidden" name="postId" value={post.id} />
-                    <button>
-                      <ArrowUp />
-                    </button>
-                  </form>
-                  {post.voteNumber}
-                  <form action={handleVoteDOWN}>
-                    <input type="hidden" name="postId" value={post.id} />
-                    <button>
-                      <ArrowDown />
-                    </button>
-                  </form>
+        {data.posts.length > 0 ? (
+          data?.posts.map((post) => (
+            <Card key={post.id} className="p-4">
+              <CardHeader className="flex flex-row items-center gap-x-3">
+                <p className="font-semibold text-xl">{post.title}</p>
+              </CardHeader>
+              <CardContent>
+                <Separator />
+                <p className="mt-2">{post.textContent}</p>
+              </CardContent>
+              <CardFooter>
+                <div className="flex items-center gap-x-4">
+                  <div className="flex items-center bg-primary/50 rounded-lg p-1 gap-x-3">
+                    <form action={handleVoteUP}>
+                      <input type="hidden" name="postId" value={post.id} />
+                      <button>
+                        <ArrowUp />
+                      </button>
+                    </form>
+                    {post.voteNumber}
+                    <form action={handleVoteDOWN}>
+                      <input type="hidden" name="postId" value={post.id} />
+                      <button>
+                        <ArrowDown />
+                      </button>
+                    </form>
+                  </div>
+
+                  <Link
+                    href={`/subreddit/${data.name}/${post.id}`}
+                    className="flex items-center gap-x-2"
+                  >
+                    <MessageCircle className="w-4 h-4 text-muted-foreground" />
+                    <p className="text-muted-foreground font-medium text-sm">
+                      {post.comment.length}
+                    </p>
+                  </Link>
+
+                  <CopyLink id={post.id} />
                 </div>
-
-                <Link
-                  href={`/subreddit/${data.name}/${post.id}`}
-                  className="flex items-center gap-x-2"
-                >
-                  <MessageCircle className="w-4 h-4 text-muted-foreground" />
-                  <p className="text-muted-foreground font-medium text-sm">
-                    {post.comment.length}
-                  </p>
-                </Link>
-
-                <CopyLink id={post.id} />
-              </div>
-            </CardFooter>
-          </Card>
-        ))}
+              </CardFooter>
+            </Card>
+          ))
+        ) : (
+          <p className="text-xl text-muted-foreground font-semibold">
+            This thread doesnt have active post. Be first to create one!
+          </p>
+        )}
       </div>
 
       <div className="w-full">
