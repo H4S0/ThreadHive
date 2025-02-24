@@ -136,61 +136,59 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
         )}
       </div>
 
-      <div className="w-full">
-        <Card>
-          <div className="bg-muted p-4 font-semibold">About Community</div>
-          <div className="p-4">
-            <div className="flex items-center gap-3">
-              <Image
-                src={`https://avatar.vercel.sh/${data?.name}`}
-                alt="image of subreddit"
-                width={60}
-                height={60}
-                className="rounded-full"
-              />
-              <Link href={`/subreddit/${data?.name}`} className="font-medium">
-                thread/{data?.name}
-              </Link>
-            </div>
-            {user?.id === data?.userId ? (
-              <SubDescriptionForm
-                description={data?.description}
-                name={params.id}
-              />
-            ) : (
-              <p className="text-sm font-normal text-secondary-foreground mt-2">
-                {data?.description}
-              </p>
-            )}
-            <div className="flex mt-2 gap-x-2 items-center">
-              <p className="text-slate-400 font-semibold text-sm">
-                Created: {data?.createdAt.toDateString()}
-              </p>
-            </div>
-
-            <Separator className="my-5" />
-            <div className="flex flex-col gap-2">
-              <Button className="w-full" asChild>
-                <Link
-                  href={
-                    user?.id
-                      ? `/subreddit/${data?.name}/create`
-                      : '/api/auth/login'
-                  }
-                >
-                  Create Post
-                </Link>
-              </Button>
-              <form action={setJoin}>
-                <input type="hidden" name="subredditId" value={subredditId} />
-                <Button className="w-full" variant="secondary">
-                  {isJoined ? 'LEAVE' : 'JOIN'}
-                </Button>
-              </form>
-            </div>
+      <Card className="w-full">
+        <div className="p-4 font-semibold">About Community</div>
+        <div className="p-4">
+          <div className="flex items-center gap-3">
+            <Image
+              src={`https://avatar.vercel.sh/${data?.name}`}
+              alt="image of subreddit"
+              width={60}
+              height={60}
+              className="rounded-full"
+            />
+            <Link href={`/subreddit/${data?.name}`} className="font-medium">
+              thread/{data?.name}
+            </Link>
           </div>
-        </Card>
-      </div>
+          {user?.id === data?.userId ? (
+            <SubDescriptionForm
+              description={data?.description}
+              name={params.id}
+            />
+          ) : (
+            <p className="text-sm font-normal text-secondary-foreground mt-2">
+              {data?.description}
+            </p>
+          )}
+          <div className="flex mt-2 gap-x-2 items-center">
+            <p className="text-slate-400 font-semibold text-sm">
+              Created: {data?.createdAt.toDateString()}
+            </p>
+          </div>
+
+          <Separator className="my-5" />
+          <div className="flex flex-col gap-2">
+            <Button className="w-full" asChild>
+              <Link
+                href={
+                  user?.id
+                    ? `/subreddit/${data?.name}/create`
+                    : '/api/auth/login'
+                }
+              >
+                Create Post
+              </Link>
+            </Button>
+            <form action={setJoin}>
+              <input type="hidden" name="subredditId" value={subredditId} />
+              <Button className="w-full" variant="secondary">
+                {isJoined ? 'LEAVE' : 'JOIN'}
+              </Button>
+            </form>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };
