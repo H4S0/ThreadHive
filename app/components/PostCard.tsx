@@ -16,6 +16,7 @@ interface postProps {
   imageString: string | null | undefined;
   voteNumber: number;
   commentLength: number;
+  createdAt: Date;
 }
 
 const PostCard = ({
@@ -27,6 +28,7 @@ const PostCard = ({
   userName,
   title,
   voteNumber,
+  createdAt,
 }: postProps) => {
   return (
     <Card className="flex relative overflow-hidden">
@@ -56,6 +58,9 @@ const PostCard = ({
           </Link>
           <p className="text-xs text-muted-foreground">
             Posted by: <span className="hover:text-primary">{userName}</span>
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Posted: {createdAt.toDateString()}
           </p>
         </div>
 

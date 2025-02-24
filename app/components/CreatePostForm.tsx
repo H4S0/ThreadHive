@@ -37,7 +37,7 @@ const SelectThread = ({ subreddit }: SelectThreadProps) => {
 
   return (
     <div>
-      <Select onValueChange={(value) => setSelectedThreadId(value)}>
+      <Select onValueChange={(value) => setSelectedThreadId(value)} required>
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Choose thread where you want to create post" />
         </SelectTrigger>

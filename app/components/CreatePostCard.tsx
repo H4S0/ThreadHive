@@ -23,7 +23,7 @@ const CreatePostCard = ({ user }: { user: UserType }) => {
 
       <div>
         <Button variant="outline" size="icon" asChild>
-          <Link href={'/posthome'}>
+          <Link href={'/postHome'}>
             <ImageDown className="w-6 h-6" />
           </Link>
         </Button>

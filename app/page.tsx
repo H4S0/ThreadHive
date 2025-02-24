@@ -78,11 +78,12 @@ export default async function Home() {
               textContent={post.textContent}
               subName={post.subName as string}
               userName={post.User?.userName as string}
+              createdAt={post.createdAt}
             />
           );
         })}
       </div>
-      <div className="w-[35%] hidden flex-col gap-y-5 sm:flex ">
+      <div className="sm:w-[35%] flex-col gap-y-5 sm:flex mt-4">
         <Card>
           <Image src={Banner} alt="banner" />
           <div className="p-2 flex flex-col gap-5">
@@ -99,8 +100,8 @@ export default async function Home() {
             </Button>
           </div>
         </Card>
-        <Card>
-          <div className="p-3 flex flex-col">
+        <Card className="mt-4">
+          <div className="p-3 flex flex-col ">
             {popularCommunities.length > 0 ? (
               [...popularCommunities]
                 .sort((a, b) => b.members - a.members)
@@ -108,7 +109,7 @@ export default async function Home() {
                   <PopularCard data={community} key={community.id} />
                 ))
             ) : (
-              <p>there is no communities</p>
+              <p>There is no communities</p>
             )}
           </div>
         </Card>

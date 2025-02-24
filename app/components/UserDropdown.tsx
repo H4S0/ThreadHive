@@ -29,7 +29,7 @@ const UserDropdown = ({ profilePicture }: DropdownProps) => {
               alt="User profile picture"
               width={32}
               height={32}
-              className="rounded-full lg:block hidden"
+              className="rounded-full"
             />
           ) : (
             <Image
