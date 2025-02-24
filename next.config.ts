@@ -10,7 +10,10 @@ const nextConfig: NextConfig = {
       {
         hostname: 'utfs.io',
       },
-    ], // Add the domain here
+      {
+        hostname: 'gravatar.com',
+      },
+    ],
   },
 };
 
