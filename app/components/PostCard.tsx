@@ -34,28 +34,6 @@ const PostCard = ({
 }: postProps) => {
   return (
     <Card className="flex relative overflow-hidden">
-      <div className="flex flex-col justify-around bg-muted p-2 h-full">
-        <form action={handleLike}>
-          <input type="hidden" name="postId" value={id} />
-          <div className="flex items-center gap-2">
-            <Button type="submit" variant="outline" size="sm">
-              <ThumbsUp className="h-4 w-4" />
-            </Button>
-            <p>{likeNumber}</p>
-          </div>
-        </form>
-
-        <form action={handleDislike}>
-          <input type="hidden" name="postId" value={id} />
-          <div className="flex items-center gap-2">
-            <Button type="submit" variant="outline" size="sm">
-              <ThumbsDown className="h-4 w-4" />
-            </Button>
-            <p>{disLikeNumber}</p>
-          </div>
-        </form>
-      </div>
-
       <div>
         <div className="flex items-center gap-x-2 p-2 w-full">
           <Link
@@ -91,6 +69,28 @@ const PostCard = ({
           )}
         </div>
         <div className="p-2 flex items-center gap-4">
+          <div className="flex items-center gap-x-2">
+            <form action={handleLike}>
+              <input type="hidden" name="postId" value={id} />
+              <div className="flex items-center gap-2">
+                <p>{likeNumber}</p>
+                <Button type="submit" variant="outline" size="sm">
+                  <ThumbsUp className="h-4 w-4" />
+                </Button>
+              </div>
+            </form>
+
+            <form action={handleDislike}>
+              <input type="hidden" name="postId" value={id} />
+              <div className="flex items-center gap-2">
+                <p>{disLikeNumber}</p>
+                <Button type="submit" variant="outline" size="sm">
+                  <ThumbsDown className="h-4 w-4" />
+                </Button>
+              </div>
+            </form>
+          </div>
+
           <Link
             href={`/subreddit/${subName}/${id}`}
             className="flex items-center gap-1"

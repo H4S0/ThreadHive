@@ -93,7 +93,17 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
               </CardHeader>
               <CardContent>
                 <Separator />
-                <p className="mt-2">{post.textContent}</p>
+                {post?.imageString ? (
+                  <Image
+                    src={post.imageString}
+                    alt="post-image"
+                    width={300}
+                    height={150}
+                    className="p-2"
+                  />
+                ) : (
+                  <p className="p-2">{post?.textContent}</p>
+                )}
               </CardContent>
               <CardFooter>
                 <div className="flex items-center gap-x-4">
