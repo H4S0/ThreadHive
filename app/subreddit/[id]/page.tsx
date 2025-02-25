@@ -64,8 +64,8 @@ async function getPopularCommunities() {
 const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
   const params = await props.params;
   const { getUser } = getKindeServerSession();
-  const popularCommunities = await getPopularCommunities();
   const user = await getUser();
+  const popularCommunities = await getPopularCommunities();
   const data = await getData(params.id);
 
   const subredditId = data?.id;
@@ -75,7 +75,7 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
   const isJoined = popularCommunities.some(
     (community) =>
       community.id === subredditId &&
-      community.users.some((u) => u.id === user.id)
+      community.users.some((u) => u.id === user?.id)
   );
 
   if (!data) {

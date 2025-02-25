@@ -82,9 +82,9 @@ const PostCard = ({
             <Image
               src={imageString}
               alt="Post image"
-              width={600}
-              height={300}
-              className="w-full h-full p-2"
+              width={350}
+              height={200}
+              className="w-full max-h-screen p-2"
             />
           ) : (
             <p className="p-2">{textContent}</p>

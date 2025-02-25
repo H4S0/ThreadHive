@@ -89,7 +89,7 @@ const page = async (props: {
   const isJoined = popularCommunities.some(
     (community) =>
       community.id === subreddit?.id &&
-      community.users.some((u) => u.id === user.id)
+      community.users.some((u) => u.id === user?.id)
   );
 
   return (
