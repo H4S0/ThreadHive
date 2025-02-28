@@ -101,7 +101,7 @@ const PostCard = ({
             </p>
           </Link>
 
-          <CopyLink id={id} />
+          <CopyLink id={id} thread={subName} />
         </div>
       </div>
     </Card>
