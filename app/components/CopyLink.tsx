@@ -4,10 +4,19 @@ import { useToast } from '@/hooks/use-toast';
 import { Share } from 'lucide-react';
 import React from 'react';
 
-const CopyLink = ({ id }: { id: string | string[] | undefined }) => {
+const CopyLink = ({
+  id,
+  thread,
+}: {
+  id: string | string[] | undefined;
+  thread: string | string[] | undefined;
+}) => {
   const { toast } = useToast();
+  console.log(id);
   async function copytoClipboard() {
-    await navigator.clipboard.writeText(`${location.origin}/post/${id}`);
+    await navigator.clipboard.writeText(
+      `${location.origin}/subreddit/${thread}/${id}`
+    );
     toast({
       title: 'Success',
       description: 'Your link is copied in your clipboard',
