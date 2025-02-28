@@ -140,7 +140,7 @@ const SubredditRoute = async (props: { params: Promise<{ id: string }> }) => {
                     </p>
                   </Link>
 
-                  <CopyLink id={post.id} />
+                  <CopyLink id={post.id} thread={data.name} />
                 </div>
               </CardFooter>
             </Card>
