@@ -131,7 +131,7 @@ const page = async (props: {
               </form>
             </div>
 
-            <CopyLink id={pageWithComments} />
+            <CopyLink id={pageWithComments} thread={id} />
           </div>
           <CreateComment postId={pageWithComments} thread={id} />
           <Separator className="mt-2" />
