@@ -34,43 +34,61 @@ const SelectThread = ({ subreddit }: SelectThreadProps) => {
   const [imageUrl, setImageUrl] = useState<null | string>(null);
   const [textContent, setTextContent] = useState<null | string>(null);
   const [title, setTitle] = useState<null | string>(null);
+  const [error, setError] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!selectedThreadId) {
+      setError(true);
+      e.preventDefault();
+      return;
+    }
+    setError(false);
+  };
 
   return (
     <div>
-      <Select onValueChange={(value) => setSelectedThreadId(value)} required>
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Choose thread where you want to create post" />
-        </SelectTrigger>
-        <SelectContent>
-          {subreddit.map((item) => (
-            <SelectItem key={item.id} value={item.name}>
-              {item.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <Separator className="my-4" />
+      <form action={createPost} onSubmit={handleSubmit}>
+        <Select onValueChange={(value) => setSelectedThreadId(value)}>
+          <SelectTrigger className="w-full border border-gray-300">
+            <SelectValue placeholder="Choose thread where you want to create post" />
+          </SelectTrigger>
+          <SelectContent>
+            {subreddit.map((item) => (
+              <SelectItem key={item.id} value={item.name}>
+                {item.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <div>
-        <Tabs defaultValue="post" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger
-              value="post"
-              className="flex items-center justify-center"
-            >
-              <Text className="h-4 w-4 mr-2" /> Post
-            </TabsTrigger>
-            <TabsTrigger
-              value="image"
-              className="flex items-center justify-center"
-            >
-              <Video className="h-4 w-4 mr-2" />
-              Image & Video
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="post">
-            <Card>
-              <form action={createPost}>
+        {error && (
+          <p className="text-red-500 text-sm mt-1">
+            Thread selection is required.
+          </p>
+        )}
+
+        <Separator className="my-4" />
+
+        <div>
+          <Tabs defaultValue="post" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger
+                value="post"
+                className="flex items-center justify-center"
+              >
+                <Text className="h-4 w-4 mr-2" /> Post
+              </TabsTrigger>
+              <TabsTrigger
+                value="image"
+                className="flex items-center justify-center"
+              >
+                <Video className="h-4 w-4 mr-2" />
+                Image & Video
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="post">
+              <Card>
                 <input
                   type="hidden"
                   name="imageUrl"
@@ -81,6 +99,7 @@ const SelectThread = ({ subreddit }: SelectThreadProps) => {
                   name="subName"
                   value={selectedThreadId ?? undefined}
                 />
+
                 <CardHeader>
                   <Label className="text-sm font-medium">Title</Label>
                   <Input
@@ -95,7 +114,8 @@ const SelectThread = ({ subreddit }: SelectThreadProps) => {
                 <CardContent>
                   <Label className="text-sm font-medium">Description</Label>
                   <Textarea
-                    placeholder="create description"
+                    required
+                    placeholder="Create description"
                     name="textContent"
                     value={textContent ?? ''}
                     onChange={(e) => setTextContent(e.target.value)}
@@ -105,37 +125,38 @@ const SelectThread = ({ subreddit }: SelectThreadProps) => {
                 <CardFooter>
                   <SubmitButtons text="Create Post" />
                 </CardFooter>
-              </form>
-            </Card>
-          </TabsContent>
-          <TabsContent value="image">
-            <Card>
-              <CardHeader>
-                {imageUrl === null ? (
-                  <UploadDropzone
-                    className="ut-button:bg-primary ut-button:ut-readying:bg-primary/50 ut-label:text-primary ut-button:ut-uploading:bg-primary/50 ut-button:ut-uploading:after:bg-primary"
-                    endpoint="imageUploader"
-                    onClientUploadComplete={(res) => {
-                      setImageUrl(res[0].url);
-                    }}
-                    onUploadError={(error: Error) => {
-                      alert(error);
-                    }}
-                  />
-                ) : (
-                  <Image
-                    src={imageUrl}
-                    alt="uploaded image"
-                    width={500}
-                    height={400}
-                    className="h-80 rounded-lg w-full object-contain"
-                  />
-                )}
-              </CardHeader>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="image">
+              <Card>
+                <CardHeader>
+                  {imageUrl === null ? (
+                    <UploadDropzone
+                      className="ut-button:bg-primary ut-button:ut-readying:bg-primary/50 ut-label:text-primary ut-button:ut-uploading:bg-primary/50 ut-button:ut-uploading:after:bg-primary"
+                      endpoint="imageUploader"
+                      onClientUploadComplete={(res) => {
+                        setImageUrl(res[0].url);
+                      }}
+                      onUploadError={(error: Error) => {
+                        alert(error);
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      src={imageUrl}
+                      alt="uploaded image"
+                      width={500}
+                      height={400}
+                      className="h-80 rounded-lg w-full object-contain"
+                    />
+                  )}
+                </CardHeader>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </form>
     </div>
   );
 };
